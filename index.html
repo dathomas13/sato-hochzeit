@@ -4,159 +4,219 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Hochzeits-RSVP – bitte um Rückmeldung" />
-  <title>Unsere Hochzeit · RSVP</title>
+  <title>Thomas &amp; Sarah · 05.09.2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500&display=swap"
     rel="stylesheet"
   />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <main class="page">
-    <header class="hero">
-      <p class="hero__kicker">Wir heiraten</p>
-      <h1 class="hero__title" id="hero-names">Anna &amp; Tim</h1>
-      <p class="hero__date" id="hero-date">Samstag, 12. September 2026</p>
-      <p class="hero__venue" id="hero-venue">Schloss Rosenhof · Musterstadt</p>
-      <div class="hero__divider" aria-hidden="true">&#10047;</div>
-    </header>
+  <nav id="nav">
+    <a href="#ablauf">Ablauf</a>
+    <a href="#story">Wir</a>
+    <a href="#rsvp">RSVP</a>
+  </nav>
 
-    <section class="info" aria-labelledby="info-title">
-      <h2 id="info-title" class="section-title">Der Ablauf</h2>
-      <div class="info__grid">
-        <article class="info__card">
-          <p class="info__time" id="info-ceremony-time">14:00 Uhr</p>
-          <h3 class="info__heading">Trauung</h3>
-          <p class="info__text" id="info-venue">Schloss Rosenhof</p>
-          <p class="info__text info__text--muted" id="info-address">
-            Rosenhofweg 1, 12345 Musterstadt
-          </p>
-        </article>
-        <article class="info__card">
-          <p class="info__time" id="info-reception-time">15:00 Uhr</p>
-          <h3 class="info__heading">Empfang &amp; Feier</h3>
-          <p class="info__text">Sektempfang im Garten,</p>
-          <p class="info__text info__text--muted">
-            anschließend Dinner &amp; Tanz bis in die Nacht.
-          </p>
-        </article>
+  <header class="hero">
+    <div class="hero__bg"></div>
+    <div class="hero__pattern"></div>
+    <div class="hero__content fade-in">
+      <p class="hero__kicker">Wir heiraten</p>
+      <h1 class="hero__title" id="hero-names">Thomas<br />&amp;<br />Sarah</h1>
+      <div class="hero__ornament" aria-hidden="true">
+        <div class="hero__line"></div>
+        <span class="hero__ornament-mark">&#10087;</span>
+        <div class="hero__line"></div>
+      </div>
+      <p class="hero__date" id="hero-date">Samstag, 5. September 2026</p>
+      <p class="hero__venue" id="hero-venue">Schloss Rosenhof · Musterstadt</p>
+
+      <div class="countdown" id="countdown" aria-label="Countdown bis zur Hochzeit">
+        <div class="countdown__item">
+          <span class="countdown__num" id="cd-d">––</span>
+          <span class="countdown__label">Tage</span>
+        </div>
+        <span class="countdown__sep" aria-hidden="true">·</span>
+        <div class="countdown__item">
+          <span class="countdown__num" id="cd-h">––</span>
+          <span class="countdown__label">Std</span>
+        </div>
+        <span class="countdown__sep" aria-hidden="true">·</span>
+        <div class="countdown__item">
+          <span class="countdown__num" id="cd-m">––</span>
+          <span class="countdown__label">Min</span>
+        </div>
+        <span class="countdown__sep" aria-hidden="true">·</span>
+        <div class="countdown__item">
+          <span class="countdown__num" id="cd-s">––</span>
+          <span class="countdown__label">Sek</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero__scroll" aria-hidden="true">
+      <div class="hero__scroll-line"></div>
+      <span>Scroll</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="section--dark" id="ablauf">
+      <div class="fade-in">
+        <p class="section-kicker">Der Tag</p>
+        <h2 class="section-title">Ablauf</h2>
+        <div class="info__grid">
+          <article class="info__card">
+            <p class="info__time" id="info-ceremony-time">14:00</p>
+            <h3 class="info__heading">Trauung</h3>
+            <p class="info__text" id="info-venue">Schloss Rosenhof</p>
+            <p class="info__text" id="info-address">Rosenhofweg 1, 12345 Musterstadt</p>
+          </article>
+          <article class="info__card">
+            <p class="info__time" id="info-reception-time">15:00</p>
+            <h3 class="info__heading">Empfang &amp; Feier</h3>
+            <p class="info__text">Sektempfang im Garten</p>
+            <p class="info__text">Dinner &amp; Tanz bis in die Nacht</p>
+          </article>
+        </div>
       </div>
     </section>
 
-    <section class="rsvp" aria-labelledby="rsvp-title">
-      <h2 id="rsvp-title" class="section-title">Bitte um Rückmeldung</h2>
-      <p class="rsvp__intro">
-        Wir freuen uns riesig, wenn du bis zum
-        <strong id="rsvp-deadline">01. August 2026</strong> Bescheid gibst.
-      </p>
+    <section class="section" id="story">
+      <div class="page fade-in">
+        <p class="section-kicker">Unsere Geschichte</p>
+        <h2 class="section-title">Wir zwei</h2>
+        <p class="story__text">
+          Wir freuen uns riesig, diesen besonderen Tag mit euch zu teilen –
+          mit den Menschen, die uns am meisten bedeuten.<br /><br />
+          Am <strong id="story-date">5. September 2026</strong> werden wir
+          auf <span id="story-venue">Schloss Rosenhof</span> Ja sagen und
+          danach gemeinsam feiern, lachen und tanzen. Wir können es kaum
+          erwarten, euch dabei zu haben.
+        </p>
+      </div>
+    </section>
 
-      <form id="rsvp-form" class="form" novalidate>
-        <div class="form__field">
-          <label for="name">Name</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            autocomplete="name"
-            required
-            minlength="2"
-          />
-        </div>
+    <section class="section" id="rsvp">
+      <div class="page fade-in">
+        <p class="section-kicker">Rückmeldung</p>
+        <h2 class="section-title">Kommst du?</h2>
+        <p class="rsvp__intro">
+          Bitte gib uns bis zum
+          <strong id="rsvp-deadline">1. August 2026</strong> Bescheid.
+        </p>
 
-        <div class="form__field">
-          <label for="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            autocomplete="email"
-            required
-          />
-          <small class="form__hint">
-            Mit derselben Email kannst du deine Antwort später anpassen.
-          </small>
-        </div>
-
-        <fieldset class="form__field form__field--radio">
-          <legend>Kommst du?</legend>
-          <div class="radio-group">
-            <label class="radio">
-              <input type="radio" name="attendance" value="yes" required />
-              <span>Ja, sehr gerne</span>
-            </label>
-            <label class="radio">
-              <input type="radio" name="attendance" value="maybe" />
-              <span>Vielleicht</span>
-            </label>
-            <label class="radio">
-              <input type="radio" name="attendance" value="no" />
-              <span>Leider nein</span>
-            </label>
+        <form id="rsvp-form" class="form" novalidate>
+          <div class="form__field">
+            <label class="form__label" for="name">Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              class="form__input"
+              autocomplete="name"
+              placeholder="Dein Name"
+              required
+              minlength="2"
+            />
           </div>
-        </fieldset>
 
-        <div class="form__field">
-          <label for="allergies">Allergien / Unverträglichkeiten</label>
-          <textarea
-            id="allergies"
-            name="allergies"
-            rows="3"
-            placeholder="z.B. vegetarisch, glutenfrei, Nussallergie…"
-          ></textarea>
-        </div>
+          <div class="form__field">
+            <label class="form__label" for="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="form__input"
+              autocomplete="email"
+              placeholder="deine@email.de"
+              required
+            />
+            <small class="form__hint">
+              Mit derselben Email kannst du deine Antwort später anpassen.
+            </small>
+          </div>
 
-        <div class="form__field">
-          <label for="wishes">Sonstige Wünsche</label>
-          <textarea
-            id="wishes"
-            name="wishes"
-            rows="3"
-            placeholder="Musikwunsch, Mitfahrgelegenheit, Hotel-Tipps…"
-          ></textarea>
-        </div>
+          <fieldset class="form__field" id="attendance-field">
+            <legend class="form__label">Kommst du?</legend>
+            <div class="radio-group" id="attendance-group">
+              <label class="radio" data-attend="yes">
+                <input type="radio" name="attendance" value="yes" required />
+                <span>Ja, sehr gerne</span>
+              </label>
+              <label class="radio" data-attend="maybe">
+                <input type="radio" name="attendance" value="maybe" />
+                <span>Vielleicht</span>
+              </label>
+              <label class="radio" data-attend="no">
+                <input type="radio" name="attendance" value="no" />
+                <span>Leider nein</span>
+              </label>
+            </div>
+          </fieldset>
 
-        <button type="submit" class="btn btn--primary" id="rsvp-submit">
-          Absenden
-        </button>
+          <div class="conditional" id="field-allergies">
+            <div class="form__field" style="margin-bottom: 0;">
+              <label class="form__label" for="allergies">
+                Allergien / Unverträglichkeiten
+              </label>
+              <textarea
+                id="allergies"
+                name="allergies"
+                class="form__textarea"
+                rows="2"
+                placeholder="z.B. vegetarisch, glutenfrei, Nussallergie …"
+              ></textarea>
+            </div>
+          </div>
 
-        <p
-          id="rsvp-status"
-          class="form__status"
-          role="status"
-          aria-live="polite"
-        ></p>
-      </form>
+          <div class="conditional" id="field-music">
+            <div class="form__field" style="margin-bottom: 0;">
+              <label class="form__label" for="wishes">Musikwunsch</label>
+              <input
+                type="text"
+                id="wishes"
+                name="wishes"
+                class="form__input"
+                placeholder="Ein Song, der auf keiner guten Party fehlen darf …"
+              />
+            </div>
+          </div>
+
+          <button type="submit" class="btn--primary" id="rsvp-submit">
+            Absenden
+          </button>
+
+          <p
+            id="rsvp-status"
+            class="form__status"
+            role="status"
+            aria-live="polite"
+          ></p>
+
+          <div class="success-msg" id="success-yes">
+            Wunderbar! Wir freuen uns auf dich. 🎉
+          </div>
+          <div class="success-msg success-msg--muted" id="success-no">
+            Schade, aber danke für deine Nachricht.
+          </div>
+        </form>
+      </div>
     </section>
-
-    <section class="qr" aria-labelledby="qr-title">
-      <h2 id="qr-title" class="section-title">Für die Einladungskarten</h2>
-      <p class="qr__intro">
-        Scanne oder drucke diesen Code – er führt direkt zu dieser Seite.
-      </p>
-      <div id="qr-code" class="qr__code" aria-label="QR-Code zur RSVP-Seite"></div>
-      <p class="qr__url" id="qr-url"></p>
-      <button type="button" class="btn btn--ghost" onclick="window.print()">
-        Drucken
-      </button>
-    </section>
-
-    <footer class="footer">
-      <p>
-        Fragen? Schreib uns an
-        <a id="footer-contact" href="mailto:hochzeit@example.com"
-          >hochzeit@example.com</a
-        >
-      </p>
-      <p class="footer__muted">
-        <a href="admin.html">Admin</a>
-      </p>
-    </footer>
   </main>
 
-  <!-- QR-Code Library via CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <footer class="footer">
+    <p>
+      Fragen?
+      <a id="footer-contact" href="mailto:hochzeit@example.com"
+        >hochzeit@example.com</a
+      >
+    </p>
+    <p class="footer__admin"><a href="admin.html">Admin</a></p>
+  </footer>
+
   <script type="module" src="js/rsvp.js"></script>
 </body>
 </html>

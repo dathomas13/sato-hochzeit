@@ -6,9 +6,13 @@ GitHub Pages.
 ## Features
 
 - **Gäste-Seite** (`index.html`)
-  - Hochzeits-Infos (Trauung, Empfang, Adresse)
-  - RSVP-Formular (Name, Email, Zusage/Vielleicht/Absage, Allergien, Wünsche)
-  - QR-Code zum Ausdrucken auf Einladungskarten
+  - Full-screen Hero mit Radial-Gradient, Ornament-Pattern und Live-Countdown
+  - Fixed Nav mit Scroll-Blur
+  - Ablauf (Dark-Section), Story ("Wir zwei"), RSVP
+  - Fade-in Animationen via IntersectionObserver (respektiert `prefers-reduced-motion`)
+  - RSVP-Formular mit conditional fields
+    (Allergien nur bei Zusage/Vielleicht, Musikwunsch nur bei Zusage)
+  - Zwei verschiedene Success-Messages (yes/maybe vs no)
   - Mobile-first, responsive
 - **Admin-Panel** (`admin.html`)
   - Firebase Email/Password Login
@@ -82,13 +86,14 @@ Absenden):
 | email       | string    | "anna@example.com"      |
 | attendance  | string    | "yes" / "maybe" / "no"  |
 | allergies   | string    | "vegetarisch"           |
-| wishes      | string    | "Musikwunsch XY"        |
+| wishes      | string    | "Musikwunsch XY" (nur bei yes) |
 | timestamp   | Timestamp | serverTimestamp()       |
 | updated     | boolean?  | true bei 2. Abgabe      |
 
 ## Design-Tokens
 
-- Gold `#d4a574`
-- Creme `#faf8f6`
-- Dunkelblau `#26215c`
-- Serif: Cormorant Garamond (Headings), Sans: Inter (Body)
+- Gold `#c9a96e` (Light `#e8d5b0`, Dark `#a88850`)
+- Creme `#faf8f5`
+- Navy `#1a163d` (Mid `#26215c`)
+- Serif: Cormorant Garamond (inkl. Italics für Zeiten/Datum)
+- Sans: Inter (Body, Labels, Buttons)

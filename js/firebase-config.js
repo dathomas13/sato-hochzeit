@@ -29,13 +29,15 @@ export function isFirebaseConfigured() {
 // Allgemeine Hochzeits-Konfiguration (zentral, damit nicht
 // im HTML rumgepfuscht werden muss).
 export const weddingConfig = {
-  brideAndGroom: "Anna & Tim",
-  date: "Samstag, 12. September 2026",
-  isoDate: "2026-09-12",
+  brideAndGroom: "Thomas & Sarah",
+  brideAndGroomHtml: "Thomas<br>&amp;<br>Sarah",
+  date: "Samstag, 5. September 2026",
+  isoDate: "2026-09-05",
   ceremonyTime: "14:00",
   receptionTime: "15:00",
   venue: "Schloss Rosenhof",
   address: "Rosenhofweg 1, 12345 Musterstadt",
-  rsvpDeadline: "01. August 2026",
+  city: "Musterstadt",
+  rsvpDeadline: "1. August 2026",
   contactEmail: "hochzeit@example.com"
 };
