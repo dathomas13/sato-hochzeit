@@ -221,6 +221,10 @@ nav.scrolled a {
   color: #fff;
   line-height: 1;
   display: block;
+  /* Tabular-nums verhindert das Springen der Ziffern im Sekundentakt
+     (1 ist sonst schmaler als 8 in Cormorant Garamond). */
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
 }
 .countdown__label {
   font-size: 0.62rem;
