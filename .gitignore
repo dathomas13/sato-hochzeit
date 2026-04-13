@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Local Firebase overrides (echte Config-Werte, falls lokal abweichend)
+js/firebase-config.local.js
+
+# Firebase CLI
+.firebase/
+firebase-debug.log

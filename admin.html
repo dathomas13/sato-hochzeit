@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Admin · Hochzeit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="admin-body">
+  <!-- Login-Ansicht -->
+  <section id="login-view" class="admin-login" aria-labelledby="login-title">
+    <div class="admin-login__card">
+      <h1 id="login-title" class="admin-login__title">Admin-Bereich</h1>
+      <p class="admin-login__subtitle">Bitte einloggen, um die Gästeliste zu sehen.</p>
+
+      <form id="login-form" class="form" novalidate>
+        <div class="form__field">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" autocomplete="username" required />
+        </div>
+        <div class="form__field">
+          <label for="login-password">Passwort</label>
+          <input
+            type="password"
+            id="login-password"
+            autocomplete="current-password"
+            required
+          />
+        </div>
+        <button type="submit" class="btn btn--primary">Einloggen</button>
+        <p id="login-status" class="form__status" role="status" aria-live="polite"></p>
+      </form>
+
+      <p class="admin-login__back"><a href="index.html">← Zurück zur Gäste-Seite</a></p>
+    </div>
+  </section>
+
+  <!-- Dashboard -->
+  <section id="dashboard-view" class="admin-dashboard" hidden>
+    <header class="admin-header">
+      <div>
+        <h1 class="admin-header__title">Gästeliste</h1>
+        <p class="admin-header__user" id="admin-user"></p>
+      </div>
+      <div class="admin-header__actions">
+        <button type="button" class="btn btn--ghost" id="export-csv">CSV Export</button>
+        <button type="button" class="btn btn--ghost" id="export-pdf">PDF / Drucken</button>
+        <button type="button" class="btn btn--ghost" id="logout-btn">Logout</button>
+      </div>
+    </header>
+
+    <section class="stats" aria-label="Übersicht">
+      <div class="stat stat--yes">
+        <p class="stat__label">Zusagen</p>
+        <p class="stat__value" id="stat-yes">0</p>
+      </div>
+      <div class="stat stat--maybe">
+        <p class="stat__label">Vielleicht</p>
+        <p class="stat__value" id="stat-maybe">0</p>
+      </div>
+      <div class="stat stat--no">
+        <p class="stat__label">Absagen</p>
+        <p class="stat__value" id="stat-no">0</p>
+      </div>
+      <div class="stat stat--total">
+        <p class="stat__label">Gesamt</p>
+        <p class="stat__value" id="stat-total">0</p>
+      </div>
+    </section>
+
+    <div class="admin-toolbar">
+      <label for="filter-attendance" class="admin-toolbar__label">Filter:</label>
+      <select id="filter-attendance" class="admin-toolbar__select">
+        <option value="all">Alle</option>
+        <option value="yes">Zusagen</option>
+        <option value="maybe">Vielleicht</option>
+        <option value="no">Absagen</option>
+      </select>
+      <input
+        type="search"
+        id="filter-search"
+        placeholder="Nach Name oder Email suchen…"
+        class="admin-toolbar__search"
+      />
+    </div>
+
+    <div class="table-wrapper">
+      <table class="guest-table" id="guest-table">
+        <thead>
+          <tr>
+            <th data-sort="name">Name</th>
+            <th data-sort="email">Email</th>
+            <th data-sort="attendance">Zusage</th>
+            <th>Allergien</th>
+            <th>Wünsche</th>
+            <th data-sort="timestamp">Zeitpunkt</th>
+          </tr>
+        </thead>
+        <tbody id="guest-tbody">
+          <tr>
+            <td colspan="6" class="guest-table__empty">Lade Daten…</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p id="admin-status" class="form__status" role="status" aria-live="polite"></p>
+  </section>
+
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>
