@@ -16,7 +16,7 @@
 <body>
   <nav id="nav">
     <a href="#ablauf">Ablauf</a>
-    <a href="#story">Wir</a>
+    <a href="#story">Geschichte</a>
     <a href="#infos">Infos</a>
     <a href="#rsvp">RSVP</a>
   </nav>
@@ -64,10 +64,12 @@
   </header>
 
   <main>
-    <section class="section--dark" id="ablauf">
+    <section class="section" id="ablauf">
       <div class="fade-in">
-        <p class="section-kicker">Der Tag</p>
-        <h2 class="section-title">Ablauf</h2>
+        <div class="page">
+          <p class="section-kicker">Der Tag</p>
+          <h2 class="section-title">Ablauf</h2>
+        </div>
         <div class="info__grid">
           <article class="info__card">
             <p class="info__time" id="info-ceremony-time">13:30</p>
@@ -87,7 +89,7 @@
       </div>
     </section>
 
-    <section class="section" id="story">
+    <section class="section section--tinted" id="story">
       <div class="page fade-in">
         <p class="section-kicker">Unsere Geschichte</p>
         <h2 class="section-title">Wir zwei</h2>
@@ -108,10 +110,10 @@
       </div>
     </section>
 
-    <section class="section section--tinted" id="infos">
+    <section class="section" id="infos">
       <div class="page fade-in">
         <p class="section-kicker">Gut zu wissen</p>
-        <h2 class="section-title">Das Drumherum</h2>
+        <h2 class="section-title">Details</h2>
         <div class="infos__grid">
           <article class="infos__item">
             <h3 class="infos__heading">Dresscode</h3>
@@ -182,7 +184,7 @@
           </div>
 
           <fieldset class="form__field" id="attendance-field">
-            <legend class="form__label">Kommst du?</legend>
+            <legend class="form__label">Deine Antwort</legend>
             <div class="radio-group" id="attendance-group">
               <label class="radio" data-attend="yes">
                 <input type="radio" name="attendance" value="yes" required />
@@ -272,7 +274,7 @@
           ></p>
 
           <div class="success-msg" id="success-yes">
-            Wunderbar! Wir freuen uns auf dich. 🎉
+            Wunderbar! Wir freuen uns auf dich.
           </div>
           <div class="success-msg success-msg--muted" id="success-no">
             Schade, aber danke für deine Nachricht.

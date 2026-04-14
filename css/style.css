@@ -1,20 +1,20 @@
 /* ============================================================
    Hochzeits-RSVP · Styles
-   Farben: Dusty Blue #7D9DB5, Creme #faf8f5, Slate #2C3A45
+   Palette: Warm Ivory #F7F4EF · Dusty Steel Blue #6B8BA4 · Charcoal Slate #2C3840
    ============================================================ */
 
 :root {
-  --gold: #7D9DB5;
-  --gold-light: #BDD0DF;
-  --gold-dark: #4E7A96;
-  --cream: #faf8f5;
-  --cream-dark: #e4e8ec;
-  --navy: #2C3A45;
-  --navy-mid: #3E5060;
-  --navy-soft: #526676;
-  --text: #2A3440;
-  --muted: #7A8E9A;
-  --border: #d4d9df;
+  --gold: #6B8BA4;
+  --gold-light: #A4C0D2;
+  --gold-dark: #46687E;
+  --cream: #F7F4EF;
+  --cream-dark: #E2E7EB;
+  --navy: #2C3840;
+  --navy-mid: #3C4F5E;
+  --navy-soft: #506070;
+  --text: #28333C;
+  --muted: #728492;
+  --border: #CDD4DA;
   --success: #2f7d54;
   --danger: #b03a2e;
 
@@ -22,8 +22,8 @@
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
   --radius: 2px;
-  --shadow-sm: 0 2px 8px rgba(26, 22, 61, 0.06);
-  --shadow-md: 0 8px 30px rgba(26, 22, 61, 0.1);
+  --shadow-sm: 0 2px 8px rgba(44, 56, 64, 0.08);
+  --shadow-md: 0 8px 30px rgba(44, 56, 64, 0.14);
 
   --max-width: 760px;
 }
@@ -77,11 +77,11 @@ nav {
   display: flex;
   justify-content: center;
   gap: 2.5rem;
-  background: rgba(44, 58, 69, 0);
+  background: rgba(44, 56, 64, 0);
   transition: background 0.4s, backdrop-filter 0.4s;
 }
 nav.scrolled {
-  background: rgba(44, 58, 69, 0.92);
+  background: rgba(44, 56, 64, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -141,9 +141,9 @@ nav.scrolled a {
   inset: 0;
   background: radial-gradient(
     ellipse at 55% 35%,
-    #3A4A58 0%,
-    #2C3A45 55%,
-    #1A2530 100%
+    #38485A 0%,
+    #2C3840 55%,
+    #1C2830 100%
   );
 }
 .hero__pattern {
@@ -267,7 +267,7 @@ nav.scrolled a {
   height: 36px;
   background: linear-gradient(
     to bottom,
-    rgba(201, 169, 110, 0.5),
+    rgba(107, 139, 164, 0.5),
     transparent
   );
 }
@@ -323,13 +323,12 @@ nav.scrolled a {
   padding: 0 1.5rem;
 }
 .info__card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(201, 169, 110, 0.2);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--navy);
+  border: 1px solid rgba(107, 139, 164, 0.15);
   padding: 2.5rem 2rem;
   border-radius: var(--radius);
   text-align: center;
+  box-shadow: 0 6px 28px rgba(44, 56, 64, 0.22);
 }
 .info__time {
   font-family: var(--font-serif);
@@ -384,7 +383,7 @@ nav.scrolled a {
    Gut zu wissen (Infos)
    ============================================================ */
 .section--tinted {
-  background: #edf1f5;
+  background: #E6EEF4;
   border-top: 1px solid var(--border);
 }
 .infos__grid {
@@ -541,7 +540,7 @@ nav.scrolled a {
   transition: background 0.2s, transform 0.1s;
 }
 .btn--primary:hover:not(:disabled) {
-  background: #3A4A58;
+  background: #384858;
   transform: translateY(-1px);
 }
 .btn--primary:active {
@@ -599,9 +598,9 @@ nav.scrolled a {
   margin-top: 1rem;
 }
 .success-msg--muted {
-  background: #f6f4f9;
-  border-color: #d9d3e0;
-  color: #7a6a8a;
+  background: #f3f5f7;
+  border-color: var(--border);
+  color: var(--muted);
 }
 .success-msg.show {
   display: block;
@@ -677,7 +676,7 @@ nav.scrolled a {
 }
 .admin-login .form__input:focus {
   border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.2);
+  box-shadow: 0 0 0 3px rgba(107, 139, 164, 0.2);
 }
 
 .admin-dashboard {
@@ -804,12 +803,12 @@ nav.scrolled a {
   white-space: nowrap;
 }
 .guest-table th[data-sort]:hover {
-  background: #e6ddce;
+  background: #d4dce4;
 }
 .guest-table th.is-sorted-asc::after { content: " ▲"; color: var(--gold-dark); }
 .guest-table th.is-sorted-desc::after { content: " ▼"; color: var(--gold-dark); }
 .guest-table tbody tr:hover {
-  background: #fcfaf7;
+  background: #f2f5f7;
 }
 .guest-table__empty {
   text-align: center;
@@ -837,7 +836,7 @@ nav.scrolled a {
   nav { gap: 1.5rem; padding: 0.8rem 1rem; }
   nav a { font-size: 0.65rem; }
   .hero__title { font-size: 3.2rem; }
-  .section, .section--dark { padding: 3.5rem 0; }
+  .section { padding: 3.5rem 0; }
   .countdown { gap: 1rem; }
   .countdown__num { font-size: 1.8rem; }
   .admin-header {
