@@ -1,20 +1,20 @@
 /* ============================================================
    Hochzeits-RSVP · Styles
-   Farben: Gold #c9a96e, Creme #faf8f5, Navy #1a163d
+   Farben: Dusty Blue #7D9DB5, Creme #faf8f5, Slate #2C3A45
    ============================================================ */
 
 :root {
-  --gold: #c9a96e;
-  --gold-light: #e8d5b0;
-  --gold-dark: #a88850;
+  --gold: #7D9DB5;
+  --gold-light: #BDD0DF;
+  --gold-dark: #4E7A96;
   --cream: #faf8f5;
-  --cream-dark: #efe9e1;
-  --navy: #1a163d;
-  --navy-mid: #26215c;
-  --navy-soft: #3a357a;
-  --text: #2a2440;
-  --muted: #8a8299;
-  --border: #e4ddd2;
+  --cream-dark: #ece8e0;
+  --navy: #2C3A45;
+  --navy-mid: #3E5060;
+  --navy-soft: #526676;
+  --text: #2A3440;
+  --muted: #7A8E9A;
+  --border: #ddd6cc;
   --success: #2f7d54;
   --danger: #b03a2e;
 
@@ -77,11 +77,11 @@ nav {
   display: flex;
   justify-content: center;
   gap: 2.5rem;
-  background: rgba(26, 22, 61, 0);
+  background: rgba(44, 58, 69, 0);
   transition: background 0.4s, backdrop-filter 0.4s;
 }
 nav.scrolled {
-  background: rgba(26, 22, 61, 0.92);
+  background: rgba(44, 58, 69, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -141,16 +141,16 @@ nav.scrolled a {
   inset: 0;
   background: radial-gradient(
     ellipse at 55% 35%,
-    #2e2860 0%,
-    #1a163d 55%,
-    #0f0d25 100%
+    #3A4A58 0%,
+    #2C3A45 55%,
+    #1A2530 100%
   );
 }
 .hero__pattern {
   position: absolute;
   inset: 0;
-  opacity: 0.06;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cellipse cx='100' cy='100' rx='60' ry='90' fill='none' stroke='%23c9a96e' stroke-width='1'/%3E%3Cellipse cx='100' cy='100' rx='90' ry='60' fill='none' stroke='%23c9a96e' stroke-width='1'/%3E%3Ccircle cx='100' cy='100' r='40' fill='none' stroke='%23c9a96e' stroke-width='.5'/%3E%3Cline x1='100' y1='10' x2='100' y2='190' stroke='%23c9a96e' stroke-width='.5'/%3E%3Cline x1='10' y1='100' x2='190' y2='100' stroke='%23c9a96e' stroke-width='.5'/%3E%3C/svg%3E");
+  opacity: 0.08;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3C!-- stem --%3E%3Cpath d='M100 103 L100 136' fill='none' stroke='%237D9DB5' stroke-width='0.8'/%3E%3C!-- left branch + leaf --%3E%3Cpath d='M100 118 Q90 125 82 130' fill='none' stroke='%237D9DB5' stroke-width='0.7'/%3E%3Cellipse cx='76' cy='134' rx='6' ry='11' fill='none' stroke='%237D9DB5' stroke-width='0.7' transform='rotate(-30 76 134)'/%3E%3C!-- right branch + leaf --%3E%3Cpath d='M100 118 Q110 125 118 130' fill='none' stroke='%237D9DB5' stroke-width='0.7'/%3E%3Cellipse cx='124' cy='134' rx='6' ry='11' fill='none' stroke='%237D9DB5' stroke-width='0.7' transform='rotate(30 124 134)'/%3E%3C!-- 5 petals (ellipses rotated around center 100,100) --%3E%3Cellipse cx='100' cy='84' rx='5.5' ry='13' fill='none' stroke='%237D9DB5' stroke-width='0.8'/%3E%3Cellipse cx='100' cy='84' rx='5.5' ry='13' fill='none' stroke='%237D9DB5' stroke-width='0.8' transform='rotate(72 100 100)'/%3E%3Cellipse cx='100' cy='84' rx='5.5' ry='13' fill='none' stroke='%237D9DB5' stroke-width='0.8' transform='rotate(144 100 100)'/%3E%3Cellipse cx='100' cy='84' rx='5.5' ry='13' fill='none' stroke='%237D9DB5' stroke-width='0.8' transform='rotate(216 100 100)'/%3E%3Cellipse cx='100' cy='84' rx='5.5' ry='13' fill='none' stroke='%237D9DB5' stroke-width='0.8' transform='rotate(288 100 100)'/%3E%3C!-- flower center --%3E%3Ccircle cx='100' cy='100' r='4' fill='none' stroke='%237D9DB5' stroke-width='0.8'/%3E%3Ccircle cx='100' cy='100' r='1.5' fill='%237D9DB5'/%3E%3C!-- corner buds --%3E%3Ccircle cx='15' cy='15' r='2' fill='none' stroke='%237D9DB5' stroke-width='0.6'/%3E%3Cpath d='M15 7 L15 10' stroke='%237D9DB5' stroke-width='0.6'/%3E%3Ccircle cx='185' cy='15' r='2' fill='none' stroke='%237D9DB5' stroke-width='0.6'/%3E%3Cpath d='M185 7 L185 10' stroke='%237D9DB5' stroke-width='0.6'/%3E%3Ccircle cx='15' cy='185' r='2' fill='none' stroke='%237D9DB5' stroke-width='0.6'/%3E%3Cpath d='M15 190 L15 193' stroke='%237D9DB5' stroke-width='0.6'/%3E%3Ccircle cx='185' cy='185' r='2' fill='none' stroke='%237D9DB5' stroke-width='0.6'/%3E%3Cpath d='M185 190 L185 193' stroke='%237D9DB5' stroke-width='0.6'/%3E%3C!-- small diamond accents at tile edges --%3E%3Cpath d='M100 4 L103 8 L100 12 L97 8 Z' fill='none' stroke='%237D9DB5' stroke-width='0.5'/%3E%3Cpath d='M100 188 L103 192 L100 196 L97 192 Z' fill='none' stroke='%237D9DB5' stroke-width='0.5'/%3E%3Cpath d='M4 100 L8 103 L12 100 L8 97 Z' fill='none' stroke='%237D9DB5' stroke-width='0.5'/%3E%3Cpath d='M188 100 L192 103 L196 100 L192 97 Z' fill='none' stroke='%237D9DB5' stroke-width='0.5'/%3E%3C/svg%3E");
   background-size: 200px 200px;
 }
 .hero__content {
@@ -530,7 +530,7 @@ nav.scrolled a {
   transition: background 0.2s, transform 0.1s;
 }
 .btn--primary:hover:not(:disabled) {
-  background: #2e2860;
+  background: #3A4A58;
   transform: translateY(-1px);
 }
 .btn--primary:active {

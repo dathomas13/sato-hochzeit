@@ -133,6 +133,8 @@ function setupConditionalFields() {
   const group = document.getElementById("attendance-group");
   const allergies = document.getElementById("field-allergies");
   const music = document.getElementById("field-music");
+  const guests = document.getElementById("field-guests");
+  const shuttle = document.getElementById("field-shuttle");
   if (!group) return;
 
   const radios = group.querySelectorAll('input[type="radio"]');
@@ -144,10 +146,30 @@ function setupConditionalFields() {
       const val = radio.value;
       const showAllergies = val === "yes" || val === "maybe";
       const showMusic = val === "yes";
+      const showGuests = val === "yes" || val === "maybe";
+      const showShuttle = val === "yes";
       allergies?.classList.toggle("show", showAllergies);
       music?.classList.toggle("show", showMusic);
+      guests?.classList.toggle("show", showGuests);
+      shuttle?.classList.toggle("show", showShuttle);
+      if (!showShuttle) {
+        document.querySelectorAll('input[name="shuttle"]').forEach((r) => { r.checked = false; });
+        document.querySelectorAll('#shuttle-group .radio').forEach((r) => r.classList.remove("selected"));
+      }
     });
   });
+
+  // highlight selected shuttle option
+  const shuttleGroup = document.getElementById("shuttle-group");
+  if (shuttleGroup) {
+    shuttleGroup.querySelectorAll('input[type="radio"]').forEach((radio) => {
+      radio.addEventListener("change", () => {
+        shuttleGroup.querySelectorAll(".radio").forEach((r) =>
+          r.classList.toggle("selected", r.contains(radio) && radio.checked)
+        );
+      });
+    });
+  }
 }
 
 // ------------------------------------------------------------
@@ -219,6 +241,8 @@ async function submitRSVP(data) {
       attendance: data.attendance,
       allergies: data.allergies,
       wishes: data.wishes,
+      guests: data.guests,
+      shuttle: data.shuttle,
       timestamp: serverTimestamp(),
       ...(existing ? { updated: true } : {})
     },
@@ -249,16 +273,21 @@ if (form) {
       email: (fd.get("email") || "").toString().trim(),
       attendance: fd.get("attendance"),
       allergies: (fd.get("allergies") || "").toString().trim(),
-      wishes: (fd.get("wishes") || "").toString().trim()
+      wishes: (fd.get("wishes") || "").toString().trim(),
+      guests: (fd.get("guests") || "").toString().trim(),
+      shuttle: (fd.get("shuttle") || "").toString().trim()
     };
 
-    // Wenn "no": keine Allergien/Wünsche (Felder waren verborgen).
+    // Wenn "no": keine Zusatzfelder (waren verborgen).
     if (data.attendance === "no") {
       data.allergies = "";
       data.wishes = "";
+      data.guests = "";
+      data.shuttle = "";
     } else if (data.attendance === "maybe") {
-      // Musikwunsch nur für yes
+      // Musikwunsch und Fahrservice nur für yes
       data.wishes = "";
+      data.shuttle = "";
     }
 
     if (data.name.length < 2) {

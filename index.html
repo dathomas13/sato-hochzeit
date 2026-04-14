@@ -72,7 +72,7 @@
           <article class="info__card">
             <p class="info__time" id="info-ceremony-time">13:30</p>
             <h3 class="info__heading">Freie Trauung</h3>
-            <p class="info__text">Einlass bereits ab 13:00 Uhr</p>
+            <p class="info__text">Wir freuen uns ab 13:00 Uhr auf euch</p>
             <p class="info__text" id="info-venue">Aurora by Event Passion</p>
             <p class="info__text" id="info-address">Rohrwiesen 4, 95478 Kemnath</p>
           </article>
@@ -119,8 +119,8 @@
           <article class="infos__item">
             <h3 class="infos__heading">Heimfahrt</h3>
             <p class="infos__text">
-              Feiert mit uns entspannt bis in die Nacht – wir organisieren
-              einen Heimfahrdienst.
+              Feiert entspannt bis in die Nacht – wir organisieren einen
+              Fahrservice nach Hause. Die Feier endet gegen 3:00 Uhr.
             </p>
           </article>
           <article class="infos__item">
@@ -217,6 +217,39 @@
                 placeholder="Ein Song, der auf keiner guten Party fehlen darf …"
               />
             </div>
+          </div>
+
+          <div class="conditional" id="field-guests">
+            <div class="form__field" style="margin-bottom: 0;">
+              <label class="form__label" for="guests">Weitere Personen</label>
+              <textarea
+                id="guests"
+                name="guests"
+                class="form__textarea"
+                rows="2"
+                placeholder="Namen weiterer Familienmitglieder, die du mitbringst …"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="conditional" id="field-shuttle">
+            <fieldset class="form__field" style="margin-bottom: 0; border: none; padding: 0;">
+              <legend class="form__label">Heimfahrt / Fahrservice</legend>
+              <div class="radio-group" id="shuttle-group">
+                <label class="radio">
+                  <input type="radio" name="shuttle" value="bus-1" />
+                  <span>Bus um 1:00 Uhr</span>
+                </label>
+                <label class="radio">
+                  <input type="radio" name="shuttle" value="bus-3" />
+                  <span>Bus um 3:00 Uhr</span>
+                </label>
+                <label class="radio">
+                  <input type="radio" name="shuttle" value="none" />
+                  <span>Ich komme selbst nach Hause</span>
+                </label>
+              </div>
+            </fieldset>
           </div>
 
           <button type="submit" class="btn--primary" id="rsvp-submit">
