@@ -26,13 +26,10 @@ function hydrateContent() {
 
   const map = {
     "hero-date": weddingConfig.date,
-    "hero-venue": `${weddingConfig.venue} · ${weddingConfig.city}`,
+    "hero-venue": `${weddingConfig.venueShort || weddingConfig.venue} · ${weddingConfig.city}`,
     "info-ceremony-time": weddingConfig.ceremonyTime,
-    "info-reception-time": weddingConfig.receptionTime,
     "info-venue": weddingConfig.venue,
     "info-address": weddingConfig.address,
-    "story-date": weddingConfig.date.replace(/^Samstag,\s*/, ""),
-    "story-venue": weddingConfig.venue,
     "rsvp-deadline": weddingConfig.rsvpDeadline
   };
   for (const [id, val] of Object.entries(map)) {

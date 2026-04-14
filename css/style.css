@@ -338,6 +338,10 @@ nav.scrolled a {
   margin-bottom: 0.4rem;
   font-style: italic;
 }
+.info__time--text {
+  font-size: 1.8rem;
+  letter-spacing: 0.02em;
+}
 .info__heading {
   font-size: 1.35rem;
   margin-bottom: 0.9rem;
@@ -363,6 +367,46 @@ nav.scrolled a {
 .story__text strong {
   color: var(--navy);
   font-weight: 400;
+}
+
+/* ============================================================
+   Gut zu wissen (Infos)
+   ============================================================ */
+.section--tinted {
+  background: #f5f0e8;
+  border-top: 1px solid var(--border);
+}
+.infos__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2.5rem 2rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.infos__item {
+  text-align: center;
+}
+.infos__item::before {
+  content: "";
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: var(--gold);
+  margin: 0 auto 1rem;
+  opacity: 0.7;
+}
+.infos__heading {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-style: italic;
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+.infos__text {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.7;
 }
 
 /* ============================================================

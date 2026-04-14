@@ -33,11 +33,12 @@ export const weddingConfig = {
   brideAndGroomHtml: "Thomas<br>&amp;<br>Sarah",
   date: "Samstag, 5. September 2026",
   isoDate: "2026-09-05",
-  ceremonyTime: "14:00",
-  receptionTime: "15:00",
-  venue: "Schloss Rosenhof",
-  address: "Rosenhofweg 1, 12345 Musterstadt",
-  city: "Musterstadt",
-  rsvpDeadline: "1. August 2026",
-  contactEmail: "hochzeit@example.com"
+  doorsTime: "13:00",
+  ceremonyTime: "13:30",
+  venue: "Aurora by Event Passion",
+  venueShort: "Aurora",
+  address: "Rohrwiesen 4, 95478 Kemnath",
+  city: "Kemnath",
+  rsvpDeadline: "31. Mai 2026",
+  contactEmail: "info.thomas.sarah@gmail.com"
 };
