@@ -257,6 +257,7 @@ nav.scrolled a {
   margin-top: 2.2rem;
   padding: 0.8rem 2.4rem;
   border: 1px solid rgba(107, 139, 164, 0.45);
+  border-bottom: 1px solid rgba(107, 139, 164, 0.45); /* override global a */
   border-radius: var(--radius);
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.72rem;
@@ -268,6 +269,7 @@ nav.scrolled a {
 }
 .hero__cta:hover {
   border-color: var(--gold);
+  border-bottom-color: var(--gold);
   color: #fff;
   background: rgba(107, 139, 164, 0.12);
 }
@@ -282,6 +284,7 @@ nav.scrolled a {
   background: var(--navy);
   color: var(--cream);
   border: none;
+  border-bottom: none; /* override global a */
   border-radius: 999px;
   font-size: 0.7rem;
   letter-spacing: 0.22em;
@@ -298,6 +301,11 @@ nav.scrolled a {
   opacity: 1;
   transform: none;
   pointer-events: auto;
+}
+.rsvp-float:hover {
+  color: var(--cream);
+  border-bottom: none;
+  background: var(--navy-mid);
 }
 
 .hero__scroll {
