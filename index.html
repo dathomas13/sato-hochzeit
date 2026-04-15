@@ -15,11 +15,16 @@
 </head>
 <body>
   <nav id="nav">
-    <a href="#ablauf">Ablauf</a>
-    <a href="#story">Geschichte</a>
-    <a href="#infos">Details</a>
-    <a href="#anreise">Anreise</a>
-    <a href="#rsvp">RSVP</a>
+    <div class="nav__links" id="nav-links">
+      <a href="#ablauf">Ablauf</a>
+      <a href="#story">Geschichte</a>
+      <a href="#infos">Details</a>
+      <a href="#anreise">Anreise</a>
+      <a href="#rsvp">RSVP</a>
+    </div>
+    <button class="nav__toggle" id="nav-toggle" aria-label="Menü öffnen" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
 
   <header class="hero">
@@ -91,11 +96,7 @@
             <span class="timeline__time" id="info-ceremony-time">13:30</span>
             <div class="timeline__body">
               <p class="timeline__event">Freie Trauung</p>
-              <p class="timeline__note">
-                <span id="info-venue">Aurora by Event Passion</span>
-                &nbsp;·&nbsp;
-                <span id="info-address">Rohrwiesen 4, 95478 Kemnath</span>
-              </p>
+              <p class="timeline__note" id="info-venue">Aurora by Event Passion</p>
             </div>
           </div>
 
@@ -175,25 +176,18 @@
           <p class="section-kicker">Erinnerungen</p>
           <h2 class="section-title">Momente</h2>
         </div>
-        <div class="gallery__grid">
-          <!-- TODO: Foto 1 eintragen -->
-          <div class="gallery__placeholder">
-            <span class="gallery__placeholder-icon">◻</span>
+        <!-- TODO: .gallery__placeholder durch <img src="..." class="gallery__slide"> ersetzen -->
+        <div class="gallery__strip" id="gallery-strip">
+          <div class="gallery__slide gallery__placeholder">
             <span class="gallery__placeholder-text">Foto folgt</span>
           </div>
-          <!-- TODO: Foto 2 eintragen -->
-          <div class="gallery__placeholder">
-            <span class="gallery__placeholder-icon">◻</span>
+          <div class="gallery__slide gallery__placeholder">
             <span class="gallery__placeholder-text">Foto folgt</span>
           </div>
-          <!-- TODO: Foto 3 eintragen -->
-          <div class="gallery__placeholder">
-            <span class="gallery__placeholder-icon">◻</span>
+          <div class="gallery__slide gallery__placeholder">
             <span class="gallery__placeholder-text">Foto folgt</span>
           </div>
-          <!-- TODO: Foto 4 eintragen -->
-          <div class="gallery__placeholder">
-            <span class="gallery__placeholder-icon">◻</span>
+          <div class="gallery__slide gallery__placeholder">
             <span class="gallery__placeholder-text">Foto folgt</span>
           </div>
         </div>

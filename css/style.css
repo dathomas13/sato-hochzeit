@@ -76,7 +76,7 @@ nav {
   padding: 0.9rem 2rem;
   display: flex;
   justify-content: center;
-  gap: 2.5rem;
+  align-items: center;
   background: rgba(44, 56, 64, 0);
   transition: background 0.4s, backdrop-filter 0.4s;
 }
@@ -85,7 +85,12 @@ nav.scrolled {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
-nav a {
+.nav__links {
+  display: flex;
+  gap: 2.5rem;
+  align-items: center;
+}
+.nav__links a {
   color: rgba(255, 255, 255, 0.5);
   text-decoration: none;
   border: none;
@@ -95,13 +100,37 @@ nav a {
   font-weight: 400;
   transition: color 0.2s;
 }
-nav a:hover,
-nav.scrolled a:hover {
+.nav__links a:hover,
+nav.scrolled .nav__links a:hover {
   color: var(--gold);
 }
-nav.scrolled a {
+nav.scrolled .nav__links a {
   color: rgba(255, 255, 255, 0.7);
 }
+
+/* Hamburger toggle (hidden on desktop) */
+.nav__toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  z-index: 102;
+  position: relative;
+}
+.nav__toggle span {
+  display: block;
+  width: 22px;
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.65);
+  transition: transform 0.3s, opacity 0.3s;
+  transform-origin: center;
+}
+.nav__toggle.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.nav__toggle.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.nav__toggle.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
 /* ============================================================
    Fade-in helper
@@ -253,8 +282,10 @@ nav.scrolled a {
 
 /* Hero CTA button */
 .hero__cta {
-  display: inline-block;
-  margin-top: 2.2rem;
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin: 2.2rem auto 0;
   padding: 0.8rem 2.4rem;
   border: 1px solid rgba(107, 139, 164, 0.45);
   border-bottom: 1px solid rgba(107, 139, 164, 0.45); /* override global a */
@@ -966,45 +997,50 @@ nav.scrolled a {
 }
 
 /* ============================================================
-   Gallery (Momente)
+   Gallery (Momente) – horizontal auto-scroll strip
    ============================================================ */
-.gallery__grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-.gallery__placeholder {
-  aspect-ratio: 4 / 3;
-  background: var(--cream-dark);
-  border: 1px dashed var(--border);
-  border-radius: var(--radius);
+.gallery__strip {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  color: var(--muted);
+  gap: 0.75rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  cursor: grab;
+  user-select: none;
+  padding: 0 1.5rem 0.5rem;
 }
-.gallery__placeholder-icon {
-  font-size: 2rem;
-  opacity: 0.35;
+.gallery__strip::-webkit-scrollbar { display: none; }
+.gallery__strip.is-grabbing { cursor: grabbing; }
+
+.gallery__slide {
+  flex: 0 0 260px;
+  height: 380px;
+  border-radius: var(--radius);
+  overflow: hidden;
 }
-.gallery__placeholder-text {
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  opacity: 0.5;
-}
-/* When real images are added: replace .gallery__placeholder with <img> */
-.gallery__grid img {
+/* Real images: <img src="…" class="gallery__slide"> */
+.gallery__slide img,
+img.gallery__slide {
   width: 100%;
-  aspect-ratio: 4 / 3;
+  height: 100%;
   object-fit: cover;
   display: block;
-  border-radius: var(--radius);
+  pointer-events: none;
+}
+/* Placeholder when no photo yet */
+.gallery__placeholder {
+  background: linear-gradient(160deg, var(--cream-dark) 0%, #d4e0ea 100%);
+  border: 1px dashed var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gallery__placeholder-text {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--border);
 }
 
 /* ============================================================
@@ -1113,18 +1149,38 @@ nav.scrolled a {
 /* ============================================================
    Responsive
    ============================================================ */
-@media (max-width: 600px) {
-  nav {
-    gap: 1.4rem;
-    padding: 0.8rem 1.5rem;
-    justify-content: flex-start;
-    overflow-x: auto;
-    white-space: nowrap;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+@media (max-width: 680px) {
+  /* Show hamburger, hide inline links */
+  .nav__toggle {
+    display: flex;
   }
-  nav::-webkit-scrollbar { display: none; }
-  nav a { font-size: 0.63rem; }
+  .nav__links {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 101;
+    background: rgba(28, 40, 48, 0.97);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+  }
+  .nav__links.open {
+    display: flex;
+  }
+  .nav__links a {
+    font-size: 0.85rem;
+    letter-spacing: 0.32em;
+    color: rgba(255, 255, 255, 0.75);
+  }
+  .nav__links a:hover {
+    color: var(--gold);
+  }
+
+  nav {
+    justify-content: flex-end;
+    padding: 0.8rem 1.2rem;
+  }
   .hero__title { font-size: 3.2rem; }
   .section { padding: 3.5rem 0; }
   .countdown { gap: 1rem; }
@@ -1145,9 +1201,10 @@ nav.scrolled a {
     font-size: 0.9rem;
   }
 
-  /* Gallery: single column on very small screens */
-  .gallery__grid {
-    grid-template-columns: 1fr;
+  /* Gallery: slightly smaller slides on mobile */
+  .gallery__slide {
+    flex: 0 0 200px;
+    height: 300px;
   }
 
   /* Hotels: single column */

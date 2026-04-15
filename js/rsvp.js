@@ -29,7 +29,6 @@ function hydrateContent() {
     "hero-venue": `${weddingConfig.venueShort || weddingConfig.venue} · ${weddingConfig.city}`,
     "info-ceremony-time": weddingConfig.ceremonyTime,
     "info-venue": weddingConfig.venue,
-    "info-address": weddingConfig.address,
     "rsvp-deadline": weddingConfig.rsvpDeadline
   };
   for (const [id, val] of Object.entries(map)) {
@@ -60,11 +59,34 @@ function formatIsoDate(iso) {
 function setupNav() {
   const nav = document.getElementById("nav");
   if (!nav) return;
+
   const onScroll = () => {
     nav.classList.toggle("scrolled", window.scrollY > 80);
   };
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
+
+  const toggle = document.getElementById("nav-toggle");
+  const links = document.getElementById("nav-links");
+  if (!toggle || !links) return;
+
+  toggle.addEventListener("click", () => {
+    const isOpen = links.classList.toggle("open");
+    toggle.classList.toggle("open", isOpen);
+    toggle.setAttribute("aria-expanded", String(isOpen));
+    toggle.setAttribute("aria-label", isOpen ? "Menü schließen" : "Menü öffnen");
+    document.body.style.overflow = isOpen ? "hidden" : "";
+  });
+
+  links.querySelectorAll("a").forEach((a) => {
+    a.addEventListener("click", () => {
+      links.classList.remove("open");
+      toggle.classList.remove("open");
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.setAttribute("aria-label", "Menü öffnen");
+      document.body.style.overflow = "";
+    });
+  });
 }
 
 // ------------------------------------------------------------
@@ -323,6 +345,69 @@ if (form) {
 }
 
 // ------------------------------------------------------------
+// Gallery – horizontal auto-scroll carousel
+// ------------------------------------------------------------
+function setupGallery() {
+  const strip = document.getElementById("gallery-strip");
+  if (!strip) return;
+
+  // Duplicate slides for seamless infinite loop
+  Array.from(strip.children).forEach((el) =>
+    strip.appendChild(el.cloneNode(true))
+  );
+
+  let pos = 0;
+  let paused = false;
+  let isDragging = false;
+  let dragStartX = 0;
+  let dragStartScroll = 0;
+
+  const halfWidth = () => strip.scrollWidth / 2;
+
+  // Pause/resume on hover
+  strip.addEventListener("mouseenter", () => { paused = true; });
+  strip.addEventListener("mouseleave", () => { if (!isDragging) paused = false; });
+
+  // Drag to scroll (mouse)
+  strip.addEventListener("mousedown", (e) => {
+    isDragging = true;
+    paused = true;
+    dragStartX = e.pageX;
+    dragStartScroll = strip.scrollLeft;
+    strip.classList.add("is-grabbing");
+  });
+  window.addEventListener("mouseup", () => {
+    if (!isDragging) return;
+    isDragging = false;
+    strip.classList.remove("is-grabbing");
+    pos = strip.scrollLeft % halfWidth();
+    setTimeout(() => { paused = false; }, 1500);
+  });
+  window.addEventListener("mousemove", (e) => {
+    if (!isDragging) return;
+    strip.scrollLeft = dragStartScroll - (e.pageX - dragStartX);
+  });
+
+  // Touch support
+  strip.addEventListener("touchstart", () => { paused = true; }, { passive: true });
+  strip.addEventListener("touchend", () => {
+    pos = strip.scrollLeft % halfWidth();
+    setTimeout(() => { paused = false; }, 2000);
+  });
+
+  function tick() {
+    if (!paused && !isDragging) {
+      pos += 0.5;
+      const hw = halfWidth();
+      if (pos >= hw) pos -= hw;
+      strip.scrollLeft = pos;
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+// ------------------------------------------------------------
 // Floating RSVP pill
 // ------------------------------------------------------------
 function setupRsvpFloat() {
@@ -351,4 +436,5 @@ setupNav();
 setupFadeIn();
 setupCountdown();
 setupConditionalFields();
+setupGallery();
 setupRsvpFloat();
