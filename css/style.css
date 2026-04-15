@@ -213,6 +213,9 @@ nav.scrolled a {
   margin-top: 0.5rem;
 }
 .countdown__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 }
 .countdown__num {
@@ -830,6 +833,227 @@ nav.scrolled a {
 .badge--no { background: #fae0dc; color: var(--danger); }
 
 /* ============================================================
+   Timeline (Ablauf)
+   ============================================================ */
+.timeline {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  position: relative;
+}
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(1.5rem + 5.5rem + 1.5rem);   /* padding + time-col + gap */
+  width: 1px;
+  background: var(--border);
+}
+.timeline__item {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  column-gap: 1.5rem;
+  padding: 1.35rem 0;
+  position: relative;
+}
+.timeline__item + .timeline__item {
+  border-top: 1px solid transparent;
+}
+/* connector dot */
+.timeline__item::after {
+  content: "";
+  position: absolute;
+  top: 1.75rem;
+  left: calc(5.5rem + 1.5rem - 4px);   /* time-col + gap - half dot */
+  width: 8px;
+  height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  border: 2px solid var(--cream);
+}
+.timeline__item--todo::after {
+  background: var(--border);
+}
+.timeline__time {
+  text-align: right;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--gold);
+  padding-top: 0.05rem;
+  line-height: 1.4;
+  word-break: break-word;
+}
+.timeline__item--todo .timeline__time {
+  color: var(--border);
+}
+.timeline__body {
+  padding-left: 1.5rem;
+}
+.timeline__event {
+  font-weight: 400;
+  font-size: 1rem;
+  color: var(--navy);
+  margin-bottom: 0.2rem;
+}
+.timeline__note {
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.timeline__item--todo .timeline__event,
+.timeline__item--todo .timeline__note {
+  color: var(--border);
+  font-style: italic;
+}
+
+/* ============================================================
+   Gallery (Momente)
+   ============================================================ */
+.gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+.gallery__placeholder {
+  aspect-ratio: 4 / 3;
+  background: var(--cream-dark);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--muted);
+}
+.gallery__placeholder-icon {
+  font-size: 2rem;
+  opacity: 0.35;
+}
+.gallery__placeholder-text {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+/* When real images are added: replace .gallery__placeholder with <img> */
+.gallery__grid img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+  border-radius: var(--radius);
+}
+
+/* ============================================================
+   Übernachtung / Hotels
+   ============================================================ */
+.hotels {
+  margin-top: 3.5rem;
+  border-top: 1px solid var(--border);
+  padding-top: 2.5rem;
+}
+.hotels__heading {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-style: italic;
+  color: var(--navy);
+  text-align: center;
+  margin-bottom: 0.6rem;
+  font-weight: 500;
+}
+.hotels__intro {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+}
+.hotel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1rem;
+}
+.hotel-card {
+  display: block;
+  padding: 1.5rem 1.25rem;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-decoration: none;
+  border-bottom: none;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.hotel-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.hotel-card__name {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  color: var(--navy);
+  margin-bottom: 0.3rem;
+  font-style: italic;
+  min-height: 1.5em;
+}
+.hotel-card__location {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 1rem;
+  line-height: 1.5;
+  min-height: 2.4em;
+}
+.hotel-card__link-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--gold-dark);
+  font-weight: 500;
+}
+
+/* ============================================================
+   Anreise / Google Maps
+   ============================================================ */
+.venue-info {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.7;
+  margin-bottom: 1.8rem;
+}
+.venue-info strong {
+  color: var(--navy);
+  font-weight: 500;
+}
+.map-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 52%;   /* 16:8.3 aspect ratio for the embed */
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  background: var(--cream-dark);
+}
+.map-wrapper iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+.venue-directions {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+}
+
+/* ============================================================
    Responsive
    ============================================================ */
 @media (max-width: 600px) {
@@ -839,6 +1063,37 @@ nav.scrolled a {
   .section { padding: 3.5rem 0; }
   .countdown { gap: 1rem; }
   .countdown__num { font-size: 1.8rem; }
+
+  /* Timeline */
+  .timeline::before {
+    left: calc(1.5rem + 4rem + 1rem);
+  }
+  .timeline__item {
+    grid-template-columns: 4rem 1fr;
+    column-gap: 1rem;
+  }
+  .timeline__item::after {
+    left: calc(4rem + 1rem - 4px);
+  }
+  .timeline__time {
+    font-size: 0.9rem;
+  }
+
+  /* Gallery: single column on very small screens */
+  .gallery__grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Hotels: single column */
+  .hotel-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Map: slightly taller on mobile */
+  .map-wrapper {
+    padding-bottom: 70%;
+  }
+
   .admin-header {
     flex-direction: column;
     align-items: stretch;
