@@ -323,6 +323,27 @@ if (form) {
 }
 
 // ------------------------------------------------------------
+// Floating RSVP pill
+// ------------------------------------------------------------
+function setupRsvpFloat() {
+  const btn = document.getElementById("rsvp-float");
+  if (!btn) return;
+  const hero = document.querySelector(".hero");
+  const rsvp = document.getElementById("rsvp");
+
+  function update() {
+    const heroBottom = hero ? hero.getBoundingClientRect().bottom : 0;
+    const rsvpTop = rsvp ? rsvp.getBoundingClientRect().top : Infinity;
+    // Show after hero has scrolled off; hide once RSVP section is visible
+    const show = heroBottom < 0 && rsvpTop > window.innerHeight * 0.6;
+    btn.classList.toggle("visible", show);
+  }
+
+  window.addEventListener("scroll", update, { passive: true });
+  update();
+}
+
+// ------------------------------------------------------------
 // Boot
 // ------------------------------------------------------------
 hydrateContent();
@@ -330,3 +351,4 @@ setupNav();
 setupFadeIn();
 setupCountdown();
 setupConditionalFields();
+setupRsvpFloat();

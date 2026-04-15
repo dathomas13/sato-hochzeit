@@ -251,6 +251,55 @@ nav.scrolled a {
   font-style: italic;
 }
 
+/* Hero CTA button */
+.hero__cta {
+  display: inline-block;
+  margin-top: 2.2rem;
+  padding: 0.8rem 2.4rem;
+  border: 1px solid rgba(107, 139, 164, 0.45);
+  border-radius: var(--radius);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 400;
+  transition: border-color 0.25s, color 0.25s, background 0.25s;
+  text-decoration: none;
+}
+.hero__cta:hover {
+  border-color: var(--gold);
+  color: #fff;
+  background: rgba(107, 139, 164, 0.12);
+}
+
+/* Floating RSVP pill */
+.rsvp-float {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 99;
+  padding: 0.65rem 1.5rem;
+  background: var(--navy);
+  color: var(--cream);
+  border: none;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 500;
+  box-shadow: 0 4px 18px rgba(44, 56, 64, 0.28);
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+  transition: opacity 0.35s, transform 0.35s;
+  text-decoration: none;
+}
+.rsvp-float.visible {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
 .hero__scroll {
   position: absolute;
   bottom: 2rem;
@@ -1057,8 +1106,17 @@ nav.scrolled a {
    Responsive
    ============================================================ */
 @media (max-width: 600px) {
-  nav { gap: 1.5rem; padding: 0.8rem 1rem; }
-  nav a { font-size: 0.65rem; }
+  nav {
+    gap: 1.4rem;
+    padding: 0.8rem 1.5rem;
+    justify-content: flex-start;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  nav a { font-size: 0.63rem; }
   .hero__title { font-size: 3.2rem; }
   .section { padding: 3.5rem 0; }
   .countdown { gap: 1rem; }
