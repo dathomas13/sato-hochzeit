@@ -67,6 +67,8 @@ h3 {
 /* ============================================================
    Navigation (fixed)
    ============================================================ */
+
+/* nav: background bar only — no children on desktop except the hidden toggle */
 nav {
   position: fixed;
   top: 0;
@@ -75,22 +77,35 @@ nav {
   z-index: 100;
   padding: 0.9rem 2rem;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   background: rgba(44, 56, 64, 0);
   transition: background 0.4s, backdrop-filter 0.4s;
+  /* backdrop-filter intentionally on nav only — NOT on nav__links,
+     so the overlay can use position:fixed without being clipped */
 }
 nav.scrolled {
   background: rgba(44, 56, 64, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
+
+/* nav__links lives OUTSIDE <nav> so backdrop-filter never traps it */
 .nav__links {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 101;
   display: flex;
-  gap: 2.5rem;
+  justify-content: center;
   align-items: center;
+  gap: 2.5rem;
+  padding: 0.9rem 2rem;
+  pointer-events: none; /* let clicks fall through to nav background */
 }
 .nav__links a {
+  pointer-events: auto;
   color: rgba(255, 255, 255, 0.5);
   text-decoration: none;
   border: none;
@@ -100,15 +115,12 @@ nav.scrolled {
   font-weight: 400;
   transition: color 0.2s;
 }
-.nav__links a:hover,
-nav.scrolled .nav__links a:hover {
-  color: var(--gold);
-}
-nav.scrolled .nav__links a {
-  color: rgba(255, 255, 255, 0.7);
-}
+.nav__links a:hover { color: var(--gold); }
+/* scrolled state: use sibling combinator since nav__links is outside nav */
+nav.scrolled ~ .nav__links a { color: rgba(255, 255, 255, 0.7); }
+nav.scrolled ~ .nav__links a:hover { color: var(--gold); }
 
-/* Hamburger toggle (hidden on desktop) */
+/* Hamburger toggle — hidden on desktop */
 .nav__toggle {
   display: none;
   flex-direction: column;
@@ -117,14 +129,12 @@ nav.scrolled .nav__links a {
   border: none;
   padding: 6px;
   cursor: pointer;
-  z-index: 102;
-  position: relative;
 }
 .nav__toggle span {
   display: block;
   width: 22px;
   height: 1.5px;
-  background: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.7);
   transition: transform 0.3s, opacity 0.3s;
   transform-origin: center;
 }
@@ -1150,20 +1160,27 @@ img.gallery__slide {
    Responsive
    ============================================================ */
 @media (max-width: 680px) {
-  /* Show hamburger, hide inline links */
+  /* Show hamburger */
   .nav__toggle {
     display: flex;
   }
+  nav {
+    /* nav stays at z-index 100; toggle inside it is above overlay (z-index 99) */
+    padding: 0.8rem 1.2rem;
+  }
+
+  /* Hide inline links; show as full-screen overlay when .open */
   .nav__links {
     display: none;
-    position: fixed;
+    z-index: 99; /* below nav (100) so toggle stays tappable */
     inset: 0;
-    z-index: 101;
-    background: rgba(28, 40, 48, 0.97);
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 3rem;
+    background: rgba(28, 40, 48, 0.97);
+    pointer-events: auto;
+    padding: 2rem;
   }
   .nav__links.open {
     display: flex;
@@ -1172,14 +1189,10 @@ img.gallery__slide {
     font-size: 0.85rem;
     letter-spacing: 0.32em;
     color: rgba(255, 255, 255, 0.75);
+    pointer-events: auto;
   }
   .nav__links a:hover {
     color: var(--gold);
-  }
-
-  nav {
-    justify-content: flex-end;
-    padding: 0.8rem 1.2rem;
   }
   .hero__title { font-size: 3.2rem; }
   .section { padding: 3.5rem 0; }
