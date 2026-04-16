@@ -1,20 +1,20 @@
 /* ============================================================
    Hochzeits-RSVP · Styles
-   Farben: Gold #c9a96e, Creme #faf8f5, Navy #1a163d
+   Palette: Warm Ivory #F7F4EF · Dusty Steel Blue #6B8BA4 · Charcoal Slate #2C3840
    ============================================================ */
 
 :root {
-  --gold: #c9a96e;
-  --gold-light: #e8d5b0;
-  --gold-dark: #a88850;
-  --cream: #faf8f5;
-  --cream-dark: #efe9e1;
-  --navy: #1a163d;
-  --navy-mid: #26215c;
-  --navy-soft: #3a357a;
-  --text: #2a2440;
-  --muted: #8a8299;
-  --border: #e4ddd2;
+  --gold: #6B8BA4;
+  --gold-light: #A4C0D2;
+  --gold-dark: #46687E;
+  --cream: #F7F4EF;
+  --cream-dark: #E2E7EB;
+  --navy: #2C3840;
+  --navy-mid: #3C4F5E;
+  --navy-soft: #506070;
+  --text: #28333C;
+  --muted: #728492;
+  --border: #CDD4DA;
   --success: #2f7d54;
   --danger: #b03a2e;
 
@@ -22,8 +22,8 @@
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
   --radius: 2px;
-  --shadow-sm: 0 2px 8px rgba(26, 22, 61, 0.06);
-  --shadow-md: 0 8px 30px rgba(26, 22, 61, 0.1);
+  --shadow-sm: 0 2px 8px rgba(44, 56, 64, 0.08);
+  --shadow-md: 0 8px 30px rgba(44, 56, 64, 0.14);
 
   --max-width: 760px;
 }
@@ -76,16 +76,35 @@ nav {
   padding: 0.9rem 2rem;
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 2.5rem;
-  background: rgba(26, 22, 61, 0);
+}
+/* Blur lives on ::before so nav itself never gets backdrop-filter.
+   backdrop-filter on an element makes it a containing block for
+   position:fixed children — keeping it on a pseudo-element avoids that,
+   so the mobile overlay can use position:fixed;inset:0 correctly. */
+nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(44, 56, 64, 0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
   transition: background 0.4s, backdrop-filter 0.4s;
 }
-nav.scrolled {
-  background: rgba(26, 22, 61, 0.92);
+nav.scrolled::before {
+  background: rgba(44, 56, 64, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
-nav a {
+
+.nav__links {
+  display: flex;
+  gap: 2.5rem;
+  align-items: center;
+}
+.nav__links a {
   color: rgba(255, 255, 255, 0.5);
   text-decoration: none;
   border: none;
@@ -95,13 +114,35 @@ nav a {
   font-weight: 400;
   transition: color 0.2s;
 }
-nav a:hover,
-nav.scrolled a:hover {
+.nav__links a:hover,
+nav.scrolled .nav__links a:hover {
   color: var(--gold);
 }
-nav.scrolled a {
+nav.scrolled .nav__links a {
   color: rgba(255, 255, 255, 0.7);
 }
+
+/* Hamburger toggle — hidden on desktop */
+.nav__toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+}
+.nav__toggle span {
+  display: block;
+  width: 22px;
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.7);
+  transition: transform 0.3s, opacity 0.3s;
+  transform-origin: center;
+}
+.nav__toggle.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.nav__toggle.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.nav__toggle.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
 /* ============================================================
    Fade-in helper
@@ -141,27 +182,27 @@ nav.scrolled a {
   inset: 0;
   background: radial-gradient(
     ellipse at 55% 35%,
-    #2e2860 0%,
-    #1a163d 55%,
-    #0f0d25 100%
+    #38485A 0%,
+    #2C3840 55%,
+    #1C2830 100%
   );
 }
 .hero__pattern {
   position: absolute;
   inset: 0;
-  opacity: 0.06;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cellipse cx='100' cy='100' rx='60' ry='90' fill='none' stroke='%23c9a96e' stroke-width='1'/%3E%3Cellipse cx='100' cy='100' rx='90' ry='60' fill='none' stroke='%23c9a96e' stroke-width='1'/%3E%3Ccircle cx='100' cy='100' r='40' fill='none' stroke='%23c9a96e' stroke-width='.5'/%3E%3Cline x1='100' y1='10' x2='100' y2='190' stroke='%23c9a96e' stroke-width='.5'/%3E%3Cline x1='10' y1='100' x2='190' y2='100' stroke='%23c9a96e' stroke-width='.5'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
+  opacity: 0.10;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3C!-- main flowing branch corner to corner --%3E%3Cpath d='M0 180 C55 150 65 115 90 90 C115 65 125 30 180 0' fill='none' stroke='%237D9DB5' stroke-width='0.8'/%3E%3C!-- leaves alternating along main branch --%3E%3Cpath d='M20 162 C10 154 8 145 14 138 C20 145 22 154 20 162 Z' fill='none' stroke='%237D9DB5' stroke-width='0.6'/%3E%3Cpath d='M45 135 C56 128 64 122 66 113 C57 118 49 124 45 135 Z' fill='none' stroke='%237D9DB5' stroke-width='0.6'/%3E%3Cpath d='M68 110 C58 102 56 93 62 86 C68 93 70 102 68 110 Z' fill='none' stroke='%237D9DB5' stroke-width='0.6'/%3E%3Cpath d='M100 82 C111 75 119 69 121 60 C112 65 104 71 100 82 Z' fill='none' stroke='%237D9DB5' stroke-width='0.6'/%3E%3Cpath d='M122 58 C112 50 110 41 116 34 C122 41 124 50 122 58 Z' fill='none' stroke='%237D9DB5' stroke-width='0.6'/%3E%3Cpath d='M152 32 C163 25 171 19 173 10 C164 15 156 21 152 32 Z' fill='none' stroke='%237D9DB5' stroke-width='0.6'/%3E%3C!-- berries at branch tips --%3E%3Ccircle cx='5' cy='175' r='2' fill='%237D9DB5' opacity='0.7'/%3E%3Ccircle cx='175' cy='5' r='1.5' fill='%237D9DB5' opacity='0.6'/%3E%3C!-- small counter-sprig bottom-right --%3E%3Cpath d='M148 152 Q162 162 170 174' fill='none' stroke='%237D9DB5' stroke-width='0.45' opacity='0.5'/%3E%3Cpath d='M150 152 C142 145 142 137 148 130 C154 137 154 145 150 152 Z' fill='none' stroke='%237D9DB5' stroke-width='0.5' opacity='0.5'/%3E%3Cpath d='M162 165 C155 158 155 150 161 144 C167 150 167 158 162 165 Z' fill='none' stroke='%237D9DB5' stroke-width='0.5' opacity='0.5'/%3E%3Ccircle cx='171' cy='175' r='1.5' fill='%237D9DB5' opacity='0.45'/%3E%3C!-- small counter-sprig top-left --%3E%3Cpath d='M28 28 Q16 18 8 5' fill='none' stroke='%237D9DB5' stroke-width='0.45' opacity='0.5'/%3E%3Cpath d='M28 28 C20 21 20 13 26 6 C32 13 32 21 28 28 Z' fill='none' stroke='%237D9DB5' stroke-width='0.5' opacity='0.5'/%3E%3Cpath d='M16 16 C9 9 9 2 15 -5 C21 2 21 9 16 16 Z' fill='none' stroke='%237D9DB5' stroke-width='0.5' opacity='0.5'/%3E%3Ccircle cx='7' cy='4' r='1.5' fill='%237D9DB5' opacity='0.45'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
 }
 .hero__content {
   position: relative;
   z-index: 1;
-  padding: 3rem 2rem;
+  padding: 3rem 2rem 6rem; /* bottom clears the scroll indicator */
 }
 .hero__kicker {
   text-transform: uppercase;
   letter-spacing: 0.4em;
-  font-size: 0.72rem;
+  font-size: 0.82rem;
   color: var(--gold);
   margin-bottom: 2rem;
 }
@@ -213,6 +254,9 @@ nav.scrolled a {
   margin-top: 0.5rem;
 }
 .countdown__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 }
 .countdown__num {
@@ -248,6 +292,65 @@ nav.scrolled a {
   font-style: italic;
 }
 
+/* Hero CTA button */
+.hero__cta {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin: 2.2rem auto 0;
+  padding: 0.8rem 2.4rem;
+  border: 1px solid rgba(107, 139, 164, 0.45);
+  border-bottom: 1px solid rgba(107, 139, 164, 0.45); /* override global a */
+  border-radius: var(--radius);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 400;
+  transition: border-color 0.25s, color 0.25s, background 0.25s;
+  text-decoration: none;
+}
+.hero__cta:hover {
+  border-color: var(--gold);
+  border-bottom-color: var(--gold);
+  color: #fff;
+  background: rgba(107, 139, 164, 0.12);
+}
+
+/* Floating RSVP pill */
+.rsvp-float {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 99;
+  padding: 0.65rem 1.5rem;
+  background: var(--navy);
+  color: var(--cream);
+  border: none;
+  border-bottom: none; /* override global a */
+  border-radius: 999px;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 500;
+  box-shadow: 0 4px 18px rgba(44, 56, 64, 0.28);
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+  transition: opacity 0.35s, transform 0.35s;
+  text-decoration: none;
+}
+.rsvp-float.visible {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.rsvp-float:hover {
+  color: var(--cream);
+  border-bottom: none;
+  background: var(--navy-mid);
+}
+
 .hero__scroll {
   position: absolute;
   bottom: 2rem;
@@ -267,7 +370,7 @@ nav.scrolled a {
   height: 36px;
   background: linear-gradient(
     to bottom,
-    rgba(201, 169, 110, 0.5),
+    rgba(107, 139, 164, 0.5),
     transparent
   );
 }
@@ -323,13 +426,12 @@ nav.scrolled a {
   padding: 0 1.5rem;
 }
 .info__card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(201, 169, 110, 0.2);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--navy);
+  border: 1px solid rgba(107, 139, 164, 0.15);
   padding: 2.5rem 2rem;
   border-radius: var(--radius);
   text-align: center;
+  box-shadow: 0 6px 28px rgba(44, 56, 64, 0.22);
 }
 .info__time {
   font-family: var(--font-serif);
@@ -356,6 +458,17 @@ nav.scrolled a {
 /* ============================================================
    Story
    ============================================================ */
+.story__figure {
+  max-width: 540px;
+  margin: 0 auto 2.5rem;
+}
+.story__image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(44, 58, 69, 0.18);
+}
 .story__text {
   max-width: 540px;
   margin: 0 auto;
@@ -373,7 +486,7 @@ nav.scrolled a {
    Gut zu wissen (Infos)
    ============================================================ */
 .section--tinted {
-  background: #f5f0e8;
+  background: #E6EEF4;
   border-top: 1px solid var(--border);
 }
 .infos__grid {
@@ -487,7 +600,7 @@ nav.scrolled a {
 }
 .radio:hover {
   border-color: var(--gold);
-  background: #fdf9f3;
+  background: #f2f5f8;
 }
 .radio input {
   accent-color: var(--gold);
@@ -495,7 +608,7 @@ nav.scrolled a {
 .radio.selected,
 .radio:has(input:checked) {
   border-color: var(--gold);
-  background: #fdf9f3;
+  background: #f2f5f8;
 }
 
 /* Conditional fields */
@@ -530,7 +643,7 @@ nav.scrolled a {
   transition: background 0.2s, transform 0.1s;
 }
 .btn--primary:hover:not(:disabled) {
-  background: #2e2860;
+  background: #384858;
   transform: translateY(-1px);
 }
 .btn--primary:active {
@@ -588,9 +701,9 @@ nav.scrolled a {
   margin-top: 1rem;
 }
 .success-msg--muted {
-  background: #f6f4f9;
-  border-color: #d9d3e0;
-  color: #7a6a8a;
+  background: #f3f5f7;
+  border-color: var(--border);
+  color: var(--muted);
 }
 .success-msg.show {
   display: block;
@@ -666,7 +779,7 @@ nav.scrolled a {
 }
 .admin-login .form__input:focus {
   border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.2);
+  box-shadow: 0 0 0 3px rgba(107, 139, 164, 0.2);
 }
 
 .admin-dashboard {
@@ -793,12 +906,12 @@ nav.scrolled a {
   white-space: nowrap;
 }
 .guest-table th[data-sort]:hover {
-  background: #e6ddce;
+  background: #d4dce4;
 }
 .guest-table th.is-sorted-asc::after { content: " ▲"; color: var(--gold-dark); }
 .guest-table th.is-sorted-desc::after { content: " ▼"; color: var(--gold-dark); }
 .guest-table tbody tr:hover {
-  background: #fcfaf7;
+  background: #f2f5f7;
 }
 .guest-table__empty {
   text-align: center;
@@ -816,19 +929,312 @@ nav.scrolled a {
   letter-spacing: 0.05em;
 }
 .badge--yes { background: #e0f0e6; color: var(--success); }
-.badge--maybe { background: #fcf1de; color: var(--gold-dark); }
+.badge--maybe { background: #dde8f0; color: var(--gold-dark); }
 .badge--no { background: #fae0dc; color: var(--danger); }
+
+/* ============================================================
+   Timeline (Ablauf)
+   ============================================================ */
+.timeline {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  position: relative;
+}
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(1.5rem + 5.5rem + 1.5rem);   /* padding + time-col + gap */
+  width: 1px;
+  background: var(--border);
+}
+.timeline__item {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  column-gap: 1.5rem;
+  padding: 1.35rem 0;
+  position: relative;
+}
+.timeline__item + .timeline__item {
+  border-top: 1px solid transparent;
+}
+/* connector dot */
+.timeline__item::after {
+  content: "";
+  position: absolute;
+  top: 1.75rem;
+  left: calc(5.5rem + 1.5rem - 4px);   /* time-col + gap - half dot */
+  width: 8px;
+  height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  border: 2px solid var(--cream);
+}
+.timeline__item--todo::after {
+  background: var(--border);
+}
+.timeline__time {
+  text-align: right;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--gold);
+  padding-top: 0.05rem;
+  line-height: 1.4;
+  word-break: break-word;
+}
+.timeline__item--todo .timeline__time {
+  color: var(--border);
+}
+.timeline__body {
+  padding-left: 1.5rem;
+}
+.timeline__event {
+  font-weight: 400;
+  font-size: 1rem;
+  color: var(--navy);
+  margin-bottom: 0.2rem;
+}
+.timeline__note {
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.timeline__item--todo .timeline__event,
+.timeline__item--todo .timeline__note {
+  color: var(--border);
+  font-style: italic;
+}
+
+/* ============================================================
+   Gallery (Momente) – horizontal auto-scroll strip
+   ============================================================ */
+.gallery__strip {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  cursor: grab;
+  user-select: none;
+  padding: 0 1.5rem 0.5rem;
+}
+.gallery__strip::-webkit-scrollbar { display: none; }
+.gallery__strip.is-grabbing { cursor: grabbing; }
+
+.gallery__slide {
+  flex: 0 0 260px;
+  height: 380px;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+/* Real images: <img src="…" class="gallery__slide"> */
+.gallery__slide img,
+img.gallery__slide {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+/* Placeholder when no photo yet */
+.gallery__placeholder {
+  background: linear-gradient(160deg, var(--cream-dark) 0%, #d4e0ea 100%);
+  border: 1px dashed var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gallery__placeholder-text {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--border);
+}
+
+/* ============================================================
+   Übernachtung / Hotels
+   ============================================================ */
+.hotels {
+  margin-top: 3.5rem;
+  border-top: 1px solid var(--border);
+  padding-top: 2.5rem;
+}
+.hotels__heading {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-style: italic;
+  color: var(--navy);
+  text-align: center;
+  margin-bottom: 0.6rem;
+  font-weight: 500;
+}
+.hotels__intro {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+}
+.hotel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1rem;
+}
+.hotel-card {
+  display: block;
+  padding: 1.5rem 1.25rem;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-decoration: none;
+  border-bottom: none;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.hotel-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.hotel-card__name {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  color: var(--navy);
+  margin-bottom: 0.3rem;
+  font-style: italic;
+  min-height: 1.5em;
+}
+.hotel-card__location {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 1rem;
+  line-height: 1.5;
+  min-height: 2.4em;
+}
+.hotel-card__link-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--gold-dark);
+  font-weight: 500;
+}
+
+/* ============================================================
+   Anreise / Google Maps
+   ============================================================ */
+.venue-info {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.7;
+  margin-bottom: 1.8rem;
+}
+.venue-info strong {
+  color: var(--navy);
+  font-weight: 500;
+}
+.map-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 52%;   /* 16:8.3 aspect ratio for the embed */
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  background: var(--cream-dark);
+}
+.map-wrapper iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+.venue-directions {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+}
 
 /* ============================================================
    Responsive
    ============================================================ */
-@media (max-width: 600px) {
-  nav { gap: 1.5rem; padding: 0.8rem 1rem; }
-  nav a { font-size: 0.65rem; }
+@media (max-width: 680px) {
+  nav {
+    justify-content: flex-end;
+    padding: 0.8rem 1.2rem;
+  }
+  .nav__toggle {
+    display: flex;
+    position: relative; /* must be positioned so z-index applies within nav's stacking context */
+    z-index: 100;       /* above nav__links.open (z-index 99) */
+  }
+  /* nav::before has backdrop-filter, not nav — so position:fixed on
+     .nav__links works relative to the viewport, not nav */
+  .nav__links {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99; /* below nav z-index:100 so toggle stays tappable */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+    background: rgba(28, 40, 48, 0.97);
+    padding: 2rem;
+  }
+  .nav__links.open {
+    display: flex;
+  }
+  .nav__links a {
+    font-size: 0.85rem;
+    letter-spacing: 0.32em;
+    color: rgba(255, 255, 255, 0.75);
+  }
+  .nav__links a:hover {
+    color: var(--gold);
+  }
   .hero__title { font-size: 3.2rem; }
-  .section, .section--dark { padding: 3.5rem 0; }
+  /* anchor content below the nav bar instead of centering in full viewport */
+  .hero { align-items: flex-start; }
+  .hero__content { padding: 5rem 1.5rem 4rem; }
+  .section { padding: 3.5rem 0; }
   .countdown { gap: 1rem; }
   .countdown__num { font-size: 1.8rem; }
+
+  /* Timeline */
+  .timeline::before {
+    left: calc(1.5rem + 4rem + 1rem);
+  }
+  .timeline__item {
+    grid-template-columns: 4rem 1fr;
+    column-gap: 1rem;
+  }
+  .timeline__item::after {
+    left: calc(4rem + 1rem - 4px);
+  }
+  .timeline__time {
+    font-size: 0.9rem;
+  }
+
+  /* Gallery: slightly smaller slides on mobile */
+  .gallery__slide {
+    flex: 0 0 200px;
+    height: 300px;
+  }
+
+  /* Hotels: single column */
+  .hotel-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Map: slightly taller on mobile */
+  .map-wrapper {
+    padding-bottom: 70%;
+  }
+
   .admin-header {
     flex-direction: column;
     align-items: stretch;

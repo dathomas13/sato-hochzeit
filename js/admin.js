@@ -246,6 +246,13 @@ function getFilteredSortedGuests() {
   return list;
 }
 
+function formatShuttle(val) {
+  if (val === "bus-1") return "Bus 1:00 Uhr";
+  if (val === "bus-3") return "Bus 3:00 Uhr";
+  if (val === "none") return "Selbst";
+  return "";
+}
+
 function escapeHtml(str) {
   return (str ?? "")
     .toString()
@@ -269,7 +276,7 @@ function renderTable() {
   const list = getFilteredSortedGuests();
 
   if (list.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" class="guest-table__empty">Keine Einträge.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" class="guest-table__empty">Keine Einträge.</td></tr>`;
   } else {
     tbody.innerHTML = list
       .map((g) => {
@@ -278,10 +285,11 @@ function renderTable() {
         return `
           <tr>
             <td>${escapeHtml(g.name)}</td>
-            <td>${escapeHtml(g.email)}</td>
             <td><span class="badge ${badgeClass}">${escapeHtml(label)}</span></td>
             <td>${escapeHtml(g.allergies || "–")}</td>
             <td>${escapeHtml(g.wishes || "–")}</td>
+            <td>${escapeHtml(formatShuttle(g.shuttle) || "–")}</td>
+            <td>${escapeHtml(g.guests || "–")}</td>
             <td>${escapeHtml(formatTimestamp(g.timestamp))}</td>
           </tr>`;
       })
@@ -331,13 +339,14 @@ exportCsvBtn?.addEventListener("click", () => {
     setAdminStatus("Keine Daten zum Exportieren.", "error");
     return;
   }
-  const header = ["Name", "Email", "Zusage", "Allergien", "Wünsche", "Zeitpunkt"];
+  const header = ["Name", "Zusage", "Allergien", "Wünsche", "Fahrservice", "Weitere Gäste", "Zeitpunkt"];
   const rows = list.map((g) => [
     g.name,
-    g.email,
     ATTENDANCE_LABEL[g.attendance] || "",
     g.allergies || "",
     g.wishes || "",
+    formatShuttle(g.shuttle) || "",
+    g.guests || "",
     formatTimestamp(g.timestamp)
   ]);
   const csv =

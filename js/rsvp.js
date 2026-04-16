@@ -29,7 +29,6 @@ function hydrateContent() {
     "hero-venue": `${weddingConfig.venueShort || weddingConfig.venue} · ${weddingConfig.city}`,
     "info-ceremony-time": weddingConfig.ceremonyTime,
     "info-venue": weddingConfig.venue,
-    "info-address": weddingConfig.address,
     "rsvp-deadline": weddingConfig.rsvpDeadline
   };
   for (const [id, val] of Object.entries(map)) {
@@ -60,11 +59,34 @@ function formatIsoDate(iso) {
 function setupNav() {
   const nav = document.getElementById("nav");
   if (!nav) return;
+
   const onScroll = () => {
     nav.classList.toggle("scrolled", window.scrollY > 80);
   };
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
+
+  const toggle = document.getElementById("nav-toggle");
+  const links = document.getElementById("nav-links");
+  if (!toggle || !links) return;
+
+  toggle.addEventListener("click", () => {
+    const isOpen = links.classList.toggle("open");
+    toggle.classList.toggle("open", isOpen);
+    toggle.setAttribute("aria-expanded", String(isOpen));
+    toggle.setAttribute("aria-label", isOpen ? "Menü schließen" : "Menü öffnen");
+    document.body.style.overflow = isOpen ? "hidden" : "";
+  });
+
+  links.querySelectorAll("a").forEach((a) => {
+    a.addEventListener("click", () => {
+      links.classList.remove("open");
+      toggle.classList.remove("open");
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.setAttribute("aria-label", "Menü öffnen");
+      document.body.style.overflow = "";
+    });
+  });
 }
 
 // ------------------------------------------------------------
@@ -133,6 +155,8 @@ function setupConditionalFields() {
   const group = document.getElementById("attendance-group");
   const allergies = document.getElementById("field-allergies");
   const music = document.getElementById("field-music");
+  const guests = document.getElementById("field-guests");
+  const shuttle = document.getElementById("field-shuttle");
   if (!group) return;
 
   const radios = group.querySelectorAll('input[type="radio"]');
@@ -144,10 +168,30 @@ function setupConditionalFields() {
       const val = radio.value;
       const showAllergies = val === "yes" || val === "maybe";
       const showMusic = val === "yes";
+      const showGuests = val === "yes" || val === "maybe";
+      const showShuttle = val === "yes";
       allergies?.classList.toggle("show", showAllergies);
       music?.classList.toggle("show", showMusic);
+      guests?.classList.toggle("show", showGuests);
+      shuttle?.classList.toggle("show", showShuttle);
+      if (!showShuttle) {
+        document.querySelectorAll('input[name="shuttle"]').forEach((r) => { r.checked = false; });
+        document.querySelectorAll('#shuttle-group .radio').forEach((r) => r.classList.remove("selected"));
+      }
     });
   });
+
+  // highlight selected shuttle option
+  const shuttleGroup = document.getElementById("shuttle-group");
+  if (shuttleGroup) {
+    shuttleGroup.querySelectorAll('input[type="radio"]').forEach((radio) => {
+      radio.addEventListener("change", () => {
+        shuttleGroup.querySelectorAll(".radio").forEach((r) =>
+          r.classList.toggle("selected", r.contains(radio) && radio.checked)
+        );
+      });
+    });
+  }
 }
 
 // ------------------------------------------------------------
@@ -184,8 +228,8 @@ function setStatus(msg, kind = "") {
   status.className = "form__status" + (kind ? ` form__status--${kind}` : "");
 }
 
-function emailToDocId(email) {
-  return email
+function nameToDocId(name) {
+  return name
     .trim()
     .toLowerCase()
     .replace(/[^a-z0-9]/g, "_")
@@ -200,7 +244,7 @@ async function submitRSVP(data) {
     );
   }
 
-  const docId = emailToDocId(data.email);
+  const docId = nameToDocId(data.name);
   const ref = doc(db, "rsvp", docId);
 
   let existing = null;
@@ -215,10 +259,11 @@ async function submitRSVP(data) {
     ref,
     {
       name: data.name,
-      email: data.email.trim().toLowerCase(),
       attendance: data.attendance,
       allergies: data.allergies,
       wishes: data.wishes,
+      guests: data.guests,
+      shuttle: data.shuttle,
       timestamp: serverTimestamp(),
       ...(existing ? { updated: true } : {})
     },
@@ -246,27 +291,27 @@ if (form) {
     const fd = new FormData(form);
     const data = {
       name: (fd.get("name") || "").toString().trim(),
-      email: (fd.get("email") || "").toString().trim(),
       attendance: fd.get("attendance"),
       allergies: (fd.get("allergies") || "").toString().trim(),
-      wishes: (fd.get("wishes") || "").toString().trim()
+      wishes: (fd.get("wishes") || "").toString().trim(),
+      guests: (fd.get("guests") || "").toString().trim(),
+      shuttle: (fd.get("shuttle") || "").toString().trim()
     };
 
-    // Wenn "no": keine Allergien/Wünsche (Felder waren verborgen).
+    // Wenn "no": keine Zusatzfelder (waren verborgen).
     if (data.attendance === "no") {
       data.allergies = "";
       data.wishes = "";
+      data.guests = "";
+      data.shuttle = "";
     } else if (data.attendance === "maybe") {
-      // Musikwunsch nur für yes
+      // Musikwunsch und Fahrservice nur für yes
       data.wishes = "";
+      data.shuttle = "";
     }
 
     if (data.name.length < 2) {
       setStatus("Bitte gib deinen Namen ein.", "error");
-      return;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
-      setStatus("Bitte gib eine gültige Email-Adresse ein.", "error");
       return;
     }
     if (!data.attendance) {
@@ -294,6 +339,90 @@ if (form) {
 }
 
 // ------------------------------------------------------------
+// Gallery – horizontal auto-scroll carousel
+// ------------------------------------------------------------
+function setupGallery() {
+  const strip = document.getElementById("gallery-strip");
+  if (!strip) return;
+
+  // Duplicate slides for seamless infinite loop
+  Array.from(strip.children).forEach((el) =>
+    strip.appendChild(el.cloneNode(true))
+  );
+
+  let pos = 0;
+  let paused = false;
+  let isDragging = false;
+  let dragStartX = 0;
+  let dragStartScroll = 0;
+
+  const halfWidth = () => strip.scrollWidth / 2;
+
+  // Pause/resume on hover
+  strip.addEventListener("mouseenter", () => { paused = true; });
+  strip.addEventListener("mouseleave", () => { if (!isDragging) paused = false; });
+
+  // Drag to scroll (mouse)
+  strip.addEventListener("mousedown", (e) => {
+    isDragging = true;
+    paused = true;
+    dragStartX = e.pageX;
+    dragStartScroll = strip.scrollLeft;
+    strip.classList.add("is-grabbing");
+  });
+  window.addEventListener("mouseup", () => {
+    if (!isDragging) return;
+    isDragging = false;
+    strip.classList.remove("is-grabbing");
+    pos = strip.scrollLeft % halfWidth();
+    setTimeout(() => { paused = false; }, 1500);
+  });
+  window.addEventListener("mousemove", (e) => {
+    if (!isDragging) return;
+    strip.scrollLeft = dragStartScroll - (e.pageX - dragStartX);
+  });
+
+  // Touch support
+  strip.addEventListener("touchstart", () => { paused = true; }, { passive: true });
+  strip.addEventListener("touchend", () => {
+    pos = strip.scrollLeft % halfWidth();
+    setTimeout(() => { paused = false; }, 2000);
+  });
+
+  function tick() {
+    if (!paused && !isDragging) {
+      pos += 0.5;
+      const hw = halfWidth();
+      if (pos >= hw) pos -= hw;
+      strip.scrollLeft = pos;
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+// ------------------------------------------------------------
+// Floating RSVP pill
+// ------------------------------------------------------------
+function setupRsvpFloat() {
+  const btn = document.getElementById("rsvp-float");
+  if (!btn) return;
+  const hero = document.querySelector(".hero");
+  const rsvp = document.getElementById("rsvp");
+
+  function update() {
+    const heroBottom = hero ? hero.getBoundingClientRect().bottom : 0;
+    const rsvpTop = rsvp ? rsvp.getBoundingClientRect().top : Infinity;
+    // Show after hero has scrolled off; hide once RSVP section is visible
+    const show = heroBottom < 0 && rsvpTop > window.innerHeight * 0.6;
+    btn.classList.toggle("visible", show);
+  }
+
+  window.addEventListener("scroll", update, { passive: true });
+  update();
+}
+
+// ------------------------------------------------------------
 // Boot
 // ------------------------------------------------------------
 hydrateContent();
@@ -301,3 +430,5 @@ setupNav();
 setupFadeIn();
 setupCountdown();
 setupConditionalFields();
+setupGallery();
+setupRsvpFloat();

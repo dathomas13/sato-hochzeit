@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Hochzeits-RSVP – bitte um Rückmeldung" />
+  <meta name="description" content="Thomas &amp; Sarah – Hochzeit am 5. September 2026 in Kemnath" />
   <title>Thomas &amp; Sarah · 05.09.2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -15,10 +15,16 @@
 </head>
 <body>
   <nav id="nav">
-    <a href="#ablauf">Ablauf</a>
-    <a href="#story">Wir</a>
-    <a href="#infos">Infos</a>
-    <a href="#rsvp">RSVP</a>
+    <div class="nav__links" id="nav-links">
+      <a href="#ablauf">Ablauf</a>
+      <a href="#story">Geschichte</a>
+      <a href="#infos">Details</a>
+      <a href="#anreise">Anreise</a>
+      <a href="#rsvp">RSVP</a>
+    </div>
+    <button class="nav__toggle" id="nav-toggle" aria-label="Menü öffnen" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
 
   <header class="hero">
@@ -55,8 +61,10 @@
           <span class="countdown__num" id="cd-s">––</span>
           <span class="countdown__label">Sek</span>
         </div>
-      </div>
-    </div>
+      </div><!-- /.countdown -->
+
+      <a href="#rsvp" class="hero__cta">Jetzt zusagen</a>
+    </div><!-- /.hero__content -->
     <div class="hero__scroll" aria-hidden="true">
       <div class="hero__scroll-line"></div>
       <span>Scroll</span>
@@ -64,35 +72,93 @@
   </header>
 
   <main>
-    <section class="section--dark" id="ablauf">
+
+    <!-- ======================================================
+         Ablauf – vertikale Timeline
+         ====================================================== -->
+    <section class="section" id="ablauf">
       <div class="fade-in">
-        <p class="section-kicker">Der Tag</p>
-        <h2 class="section-title">Ablauf</h2>
-        <div class="info__grid">
-          <article class="info__card">
-            <p class="info__time" id="info-ceremony-time">13:30</p>
-            <h3 class="info__heading">Freie Trauung</h3>
-            <p class="info__text">Einlass bereits ab 13:00 Uhr</p>
-            <p class="info__text" id="info-venue">Aurora by Event Passion</p>
-            <p class="info__text" id="info-address">Rohrwiesen 4, 95478 Kemnath</p>
-          </article>
-          <article class="info__card">
-            <p class="info__time info__time--text">im Anschluss</p>
-            <h3 class="info__heading">Empfang &amp; Feier</h3>
-            <p class="info__text">Aperol, Sekt, Bier &amp; Snackbuffet</p>
-            <p class="info__text">fließend in Kaffee &amp; Kuchen</p>
-            <p class="info__text">und Feier bis in die Nacht</p>
-          </article>
+        <div class="page">
+          <p class="section-kicker">Der Tag</p>
+          <h2 class="section-title">Ablauf</h2>
         </div>
+        <div class="timeline">
+
+          <div class="timeline__item">
+            <span class="timeline__time">13:00</span>
+            <div class="timeline__body">
+              <p class="timeline__event">Ankunft der Gäste</p>
+              <p class="timeline__note">Herzlich willkommen – Türen öffnen</p>
+            </div>
+          </div>
+
+          <div class="timeline__item">
+            <span class="timeline__time" id="info-ceremony-time">13:30</span>
+            <div class="timeline__body">
+              <p class="timeline__event">Freie Trauung</p>
+              <p class="timeline__note" id="info-venue">Aurora by Event Passion</p>
+            </div>
+          </div>
+
+          <div class="timeline__item">
+            <span class="timeline__time">im Anschluss</span>
+            <div class="timeline__body">
+              <p class="timeline__event">Aperitif &amp; Empfang</p>
+              <p class="timeline__note">Sekt, Aperol, Bier &amp; Snackbuffet</p>
+            </div>
+          </div>
+
+          <div class="timeline__item">
+            <span class="timeline__time">später</span>
+            <div class="timeline__body">
+              <p class="timeline__event">Kaffee &amp; Kuchen</p>
+            </div>
+          </div>
+
+          <div class="timeline__item">
+            <span class="timeline__time">18:30</span>
+            <div class="timeline__body">
+              <p class="timeline__event">Dinner</p>
+            </div>
+          </div>
+
+          <div class="timeline__item">
+            <span class="timeline__time">ab 20:00</span>
+            <div class="timeline__body">
+              <p class="timeline__event">Tanzfläche &amp; Party</p>
+            </div>
+          </div>
+
+          <div class="timeline__item">
+            <span class="timeline__time">ca. 3:00</span>
+            <div class="timeline__body">
+              <p class="timeline__event">Ende &amp; Fahrservice</p>
+              <p class="timeline__note">Busabfahrten 1:00 Uhr und 3:00 Uhr</p>
+            </div>
+          </div>
+
+        </div><!-- /.timeline -->
       </div>
     </section>
 
-    <section class="section" id="story">
+    <!-- ======================================================
+         Geschichte / Story
+         ====================================================== -->
+    <section class="section section--tinted" id="story">
       <div class="page fade-in">
         <p class="section-kicker">Unsere Geschichte</p>
         <h2 class="section-title">Wir zwei</h2>
+        <figure class="story__figure">
+          <!-- TODO: Foto unter img/uns.jpg ablegen -->
+          <img
+            src="img/uns.jpg"
+            alt="Thomas und Sarah"
+            class="story__image"
+            loading="lazy"
+          />
+        </figure>
         <p class="story__text">
-          „Was lange währt, wird endlich gut“ – so heißt es ja.<br /><br />
+          „Was lange währt, wird endlich gut" – so heißt es ja.<br /><br />
           Am zehnten Jahrestag kam der Antrag, am elften folgt nun das Ja-Wort.
           Wir freuen uns riesig, diesen besonderen Tag mit euch zu teilen –
           mit den Menschen, die uns am meisten bedeuten.
@@ -100,10 +166,42 @@
       </div>
     </section>
 
+    <!-- ======================================================
+         Momente – Galerie-Platzhalter
+         (TODO: .gallery__placeholder durch echte <img>-Tags ersetzen)
+         ====================================================== -->
+    <section class="section" id="gallery">
+      <div class="fade-in">
+        <div class="page">
+          <p class="section-kicker">Erinnerungen</p>
+          <h2 class="section-title">Momente</h2>
+        </div>
+        <!-- TODO: .gallery__placeholder durch <img src="..." class="gallery__slide"> ersetzen -->
+        <div class="gallery__strip" id="gallery-strip">
+          <div class="gallery__slide gallery__placeholder">
+            <span class="gallery__placeholder-text">Foto folgt</span>
+          </div>
+          <div class="gallery__slide gallery__placeholder">
+            <span class="gallery__placeholder-text">Foto folgt</span>
+          </div>
+          <div class="gallery__slide gallery__placeholder">
+            <span class="gallery__placeholder-text">Foto folgt</span>
+          </div>
+          <div class="gallery__slide gallery__placeholder">
+            <span class="gallery__placeholder-text">Foto folgt</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         Details / Infos
+         ====================================================== -->
     <section class="section section--tinted" id="infos">
       <div class="page fade-in">
         <p class="section-kicker">Gut zu wissen</p>
-        <h2 class="section-title">Das Drumherum</h2>
+        <h2 class="section-title">Details</h2>
+
         <div class="infos__grid">
           <article class="infos__item">
             <h3 class="infos__heading">Dresscode</h3>
@@ -119,21 +217,78 @@
           <article class="infos__item">
             <h3 class="infos__heading">Heimfahrt</h3>
             <p class="infos__text">
-              Feiert mit uns entspannt bis in die Nacht – wir organisieren
-              einen Heimfahrdienst.
-            </p>
-          </article>
-          <article class="infos__item">
-            <h3 class="infos__heading">Übernachtung</h3>
-            <p class="infos__text">
-              Tipps für Unterkünfte in Kemnath folgen in Kürze.
+              Feiert entspannt bis in die Nacht – wir organisieren einen
+              Fahrservice nach Hause. Die Feier endet gegen 3:00 Uhr.
             </p>
           </article>
         </div>
+
+        <!-- Übernachtung: als eigene Untersektion mit Hotel-Karten -->
+        <div class="hotels">
+          <h3 class="hotels__heading">Übernachtung</h3>
+          <!-- TODO: Intro-Text anpassen -->
+          <p class="hotels__intro">
+            Kemnath und Umgebung bieten einige schöne Übernachtungsmöglichkeiten.
+          </p>
+          <div class="hotel-grid">
+            <!-- TODO: Hotelname, Adresse und Website-Link eintragen -->
+            <a href="#" class="hotel-card">
+              <p class="hotel-card__name"><!-- TODO: Hotelname --></p>
+              <p class="hotel-card__location"><!-- TODO: Adresse · ca. X km --></p>
+              <span class="hotel-card__link-label">Website →</span>
+            </a>
+            <!-- TODO: Hotelname, Adresse und Website-Link eintragen -->
+            <a href="#" class="hotel-card">
+              <p class="hotel-card__name"><!-- TODO: Hotelname --></p>
+              <p class="hotel-card__location"><!-- TODO: Adresse · ca. X km --></p>
+              <span class="hotel-card__link-label">Website →</span>
+            </a>
+            <!-- TODO: Hotelname, Adresse und Website-Link eintragen -->
+            <a href="#" class="hotel-card">
+              <p class="hotel-card__name"><!-- TODO: Hotelname --></p>
+              <p class="hotel-card__location"><!-- TODO: Adresse · ca. X km --></p>
+              <span class="hotel-card__link-label">Website →</span>
+            </a>
+          </div>
+        </div>
+
       </div>
     </section>
 
-    <section class="section" id="rsvp">
+    <!-- ======================================================
+         Anreise – Google Maps Embed
+         ====================================================== -->
+    <section class="section" id="anreise">
+      <div class="page fade-in">
+        <p class="section-kicker">So findet ihr uns</p>
+        <h2 class="section-title">Anreise</h2>
+        <p class="venue-info">
+          <strong>Aurora by Event Passion</strong><br />
+          Rohrwiesen 4, 95478 Kemnath
+        </p>
+        <div class="map-wrapper">
+          <iframe
+            src="https://maps.google.com/maps?q=Rohrwiesen+4,+95478+Kemnath,+Deutschland&output=embed&z=15&hl=de"
+            title="Anfahrt zur Hochzeit – Aurora by Event Passion, Kemnath"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <p class="venue-directions">
+          <a
+            href="https://maps.google.com/maps?q=Rohrwiesen+4,+95478+Kemnath,+Deutschland"
+            target="_blank"
+            rel="noopener noreferrer"
+          >In Google Maps öffnen →</a>
+        </p>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         RSVP
+         ====================================================== -->
+    <section class="section section--tinted" id="rsvp">
       <div class="page fade-in">
         <p class="section-kicker">Rückmeldung</p>
         <h2 class="section-title">Kommst du?</h2>
@@ -157,24 +312,8 @@
             />
           </div>
 
-          <div class="form__field">
-            <label class="form__label" for="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              class="form__input"
-              autocomplete="email"
-              placeholder="deine@email.de"
-              required
-            />
-            <small class="form__hint">
-              Mit derselben Email kannst du deine Antwort später anpassen.
-            </small>
-          </div>
-
           <fieldset class="form__field" id="attendance-field">
-            <legend class="form__label">Kommst du?</legend>
+            <legend class="form__label">Deine Antwort</legend>
             <div class="radio-group" id="attendance-group">
               <label class="radio" data-attend="yes">
                 <input type="radio" name="attendance" value="yes" required />
@@ -219,6 +358,39 @@
             </div>
           </div>
 
+          <div class="conditional" id="field-guests">
+            <div class="form__field" style="margin-bottom: 0;">
+              <label class="form__label" for="guests">Weitere Personen</label>
+              <textarea
+                id="guests"
+                name="guests"
+                class="form__textarea"
+                rows="2"
+                placeholder="Namen weiterer Familienmitglieder, die du mitbringst …"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="conditional" id="field-shuttle">
+            <fieldset class="form__field" style="margin-bottom: 0; border: none; padding: 0;">
+              <legend class="form__label">Heimfahrt / Fahrservice</legend>
+              <div class="radio-group" id="shuttle-group">
+                <label class="radio">
+                  <input type="radio" name="shuttle" value="bus-1" />
+                  <span>Bus um 1:00 Uhr</span>
+                </label>
+                <label class="radio">
+                  <input type="radio" name="shuttle" value="bus-3" />
+                  <span>Bus um 3:00 Uhr</span>
+                </label>
+                <label class="radio">
+                  <input type="radio" name="shuttle" value="none" />
+                  <span>Ich komme selbst nach Hause</span>
+                </label>
+              </div>
+            </fieldset>
+          </div>
+
           <button type="submit" class="btn--primary" id="rsvp-submit">
             Absenden
           </button>
@@ -231,7 +403,7 @@
           ></p>
 
           <div class="success-msg" id="success-yes">
-            Wunderbar! Wir freuen uns auf dich. 🎉
+            Wunderbar! Wir freuen uns auf dich.
           </div>
           <div class="success-msg success-msg--muted" id="success-no">
             Schade, aber danke für deine Nachricht.
@@ -239,6 +411,7 @@
         </form>
       </div>
     </section>
+
   </main>
 
   <footer class="footer">
@@ -250,6 +423,8 @@
     </p>
     <p class="footer__admin"><a href="admin.html">Admin</a></p>
   </footer>
+
+  <a href="#rsvp" class="rsvp-float" id="rsvp-float" aria-label="Zur Anmeldung springen">RSVP</a>
 
   <script type="module" src="js/rsvp.js"></script>
 </body>
