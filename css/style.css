@@ -202,7 +202,7 @@ nav.scrolled .nav__links a {
 .hero__kicker {
   text-transform: uppercase;
   letter-spacing: 0.4em;
-  font-size: 0.72rem;
+  font-size: 0.82rem;
   color: var(--gold);
   margin-bottom: 2rem;
 }

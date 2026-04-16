@@ -228,8 +228,8 @@ function setStatus(msg, kind = "") {
   status.className = "form__status" + (kind ? ` form__status--${kind}` : "");
 }
 
-function emailToDocId(email) {
-  return email
+function nameToDocId(name) {
+  return name
     .trim()
     .toLowerCase()
     .replace(/[^a-z0-9]/g, "_")
@@ -244,7 +244,7 @@ async function submitRSVP(data) {
     );
   }
 
-  const docId = emailToDocId(data.email);
+  const docId = nameToDocId(data.name);
   const ref = doc(db, "rsvp", docId);
 
   let existing = null;
@@ -259,7 +259,6 @@ async function submitRSVP(data) {
     ref,
     {
       name: data.name,
-      email: data.email.trim().toLowerCase(),
       attendance: data.attendance,
       allergies: data.allergies,
       wishes: data.wishes,
@@ -292,7 +291,6 @@ if (form) {
     const fd = new FormData(form);
     const data = {
       name: (fd.get("name") || "").toString().trim(),
-      email: (fd.get("email") || "").toString().trim(),
       attendance: fd.get("attendance"),
       allergies: (fd.get("allergies") || "").toString().trim(),
       wishes: (fd.get("wishes") || "").toString().trim(),
@@ -314,10 +312,6 @@ if (form) {
 
     if (data.name.length < 2) {
       setStatus("Bitte gib deinen Namen ein.", "error");
-      return;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
-      setStatus("Bitte gib eine gültige Email-Adresse ein.", "error");
       return;
     }
     if (!data.attendance) {

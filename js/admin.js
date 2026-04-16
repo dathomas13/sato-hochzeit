@@ -276,7 +276,7 @@ function renderTable() {
   const list = getFilteredSortedGuests();
 
   if (list.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8" class="guest-table__empty">Keine Einträge.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" class="guest-table__empty">Keine Einträge.</td></tr>`;
   } else {
     tbody.innerHTML = list
       .map((g) => {
@@ -285,7 +285,6 @@ function renderTable() {
         return `
           <tr>
             <td>${escapeHtml(g.name)}</td>
-            <td>${escapeHtml(g.email)}</td>
             <td><span class="badge ${badgeClass}">${escapeHtml(label)}</span></td>
             <td>${escapeHtml(g.allergies || "–")}</td>
             <td>${escapeHtml(g.wishes || "–")}</td>
@@ -340,10 +339,9 @@ exportCsvBtn?.addEventListener("click", () => {
     setAdminStatus("Keine Daten zum Exportieren.", "error");
     return;
   }
-  const header = ["Name", "Email", "Zusage", "Allergien", "Wünsche", "Fahrservice", "Weitere Gäste", "Zeitpunkt"];
+  const header = ["Name", "Zusage", "Allergien", "Wünsche", "Fahrservice", "Weitere Gäste", "Zeitpunkt"];
   const rows = list.map((g) => [
     g.name,
-    g.email,
     ATTENDANCE_LABEL[g.attendance] || "",
     g.allergies || "",
     g.wishes || "",
