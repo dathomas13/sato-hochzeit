@@ -1197,7 +1197,7 @@ img.gallery__slide {
     color: var(--gold);
   }
   .hero__title { font-size: 3.2rem; }
-  .hero__content { padding: 3rem 1.5rem 4rem; } /* less bottom padding on mobile */
+  .hero__content { padding: 1rem 1.5rem 4rem; } /* tighter top on mobile */
   .section { padding: 3.5rem 0; }
   .countdown { gap: 1rem; }
   .countdown__num { font-size: 1.8rem; }
