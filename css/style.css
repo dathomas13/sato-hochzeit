@@ -67,8 +67,6 @@ h3 {
 /* ============================================================
    Navigation (fixed)
    ============================================================ */
-
-/* nav: background bar only — no children on desktop except the hidden toggle */
 nav {
   position: fixed;
   top: 0;
@@ -77,35 +75,36 @@ nav {
   z-index: 100;
   padding: 0.9rem 2rem;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
-  background: rgba(44, 56, 64, 0);
-  transition: background 0.4s, backdrop-filter 0.4s;
-  /* backdrop-filter intentionally on nav only — NOT on nav__links,
-     so the overlay can use position:fixed without being clipped */
+  gap: 2.5rem;
 }
-nav.scrolled {
+/* Blur lives on ::before so nav itself never gets backdrop-filter.
+   backdrop-filter on an element makes it a containing block for
+   position:fixed children — keeping it on a pseudo-element avoids that,
+   so the mobile overlay can use position:fixed;inset:0 correctly. */
+nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(44, 56, 64, 0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  transition: background 0.4s, backdrop-filter 0.4s;
+}
+nav.scrolled::before {
   background: rgba(44, 56, 64, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
-/* nav__links lives OUTSIDE <nav> so backdrop-filter never traps it */
 .nav__links {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 101;
   display: flex;
-  justify-content: center;
-  align-items: center;
   gap: 2.5rem;
-  padding: 0.9rem 2rem;
-  pointer-events: none; /* let clicks fall through to nav background */
+  align-items: center;
 }
 .nav__links a {
-  pointer-events: auto;
   color: rgba(255, 255, 255, 0.5);
   text-decoration: none;
   border: none;
@@ -115,10 +114,13 @@ nav.scrolled {
   font-weight: 400;
   transition: color 0.2s;
 }
-.nav__links a:hover { color: var(--gold); }
-/* scrolled state: use sibling combinator since nav__links is outside nav */
-nav.scrolled ~ .nav__links a { color: rgba(255, 255, 255, 0.7); }
-nav.scrolled ~ .nav__links a:hover { color: var(--gold); }
+.nav__links a:hover,
+nav.scrolled .nav__links a:hover {
+  color: var(--gold);
+}
+nav.scrolled .nav__links a {
+  color: rgba(255, 255, 255, 0.7);
+}
 
 /* Hamburger toggle — hidden on desktop */
 .nav__toggle {
@@ -195,7 +197,7 @@ nav.scrolled ~ .nav__links a:hover { color: var(--gold); }
 .hero__content {
   position: relative;
   z-index: 1;
-  padding: 3rem 2rem;
+  padding: 3rem 2rem 6rem; /* bottom clears the scroll indicator */
 }
 .hero__kicker {
   text-transform: uppercase;
@@ -1160,26 +1162,25 @@ img.gallery__slide {
    Responsive
    ============================================================ */
 @media (max-width: 680px) {
-  /* Show hamburger */
+  nav {
+    justify-content: flex-end;
+    padding: 0.8rem 1.2rem;
+  }
   .nav__toggle {
     display: flex;
   }
-  nav {
-    /* nav stays at z-index 100; toggle inside it is above overlay (z-index 99) */
-    padding: 0.8rem 1.2rem;
-  }
-
-  /* Hide inline links; show as full-screen overlay when .open */
+  /* nav::before has backdrop-filter, not nav — so position:fixed on
+     .nav__links works relative to the viewport, not nav */
   .nav__links {
     display: none;
-    z-index: 99; /* below nav (100) so toggle stays tappable */
+    position: fixed;
     inset: 0;
+    z-index: 99; /* below nav z-index:100 so toggle stays tappable */
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 3rem;
     background: rgba(28, 40, 48, 0.97);
-    pointer-events: auto;
     padding: 2rem;
   }
   .nav__links.open {
@@ -1189,7 +1190,6 @@ img.gallery__slide {
     font-size: 0.85rem;
     letter-spacing: 0.32em;
     color: rgba(255, 255, 255, 0.75);
-    pointer-events: auto;
   }
   .nav__links a:hover {
     color: var(--gold);

@@ -15,19 +15,17 @@
 </head>
 <body>
   <nav id="nav">
+    <div class="nav__links" id="nav-links">
+      <a href="#ablauf">Ablauf</a>
+      <a href="#story">Geschichte</a>
+      <a href="#infos">Details</a>
+      <a href="#anreise">Anreise</a>
+      <a href="#rsvp">RSVP</a>
+    </div>
     <button class="nav__toggle" id="nav-toggle" aria-label="Menü öffnen" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </nav>
-  <!-- nav__links is outside <nav> intentionally: backdrop-filter on nav.scrolled
-       would make nav a containing block for position:fixed children, breaking the overlay -->
-  <div class="nav__links" id="nav-links">
-    <a href="#ablauf">Ablauf</a>
-    <a href="#story">Geschichte</a>
-    <a href="#infos">Details</a>
-    <a href="#anreise">Anreise</a>
-    <a href="#rsvp">RSVP</a>
-  </div>
 
   <header class="hero">
     <div class="hero__bg"></div>
