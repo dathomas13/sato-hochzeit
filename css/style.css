@@ -1168,6 +1168,8 @@ img.gallery__slide {
   }
   .nav__toggle {
     display: flex;
+    position: relative; /* must be positioned so z-index applies within nav's stacking context */
+    z-index: 100;       /* above nav__links.open (z-index 99) */
   }
   /* nav::before has backdrop-filter, not nav — so position:fixed on
      .nav__links works relative to the viewport, not nav */
@@ -1195,6 +1197,7 @@ img.gallery__slide {
     color: var(--gold);
   }
   .hero__title { font-size: 3.2rem; }
+  .hero__content { padding: 3rem 1.5rem 4rem; } /* less bottom padding on mobile */
   .section { padding: 3.5rem 0; }
   .countdown { gap: 1rem; }
   .countdown__num { font-size: 1.8rem; }
