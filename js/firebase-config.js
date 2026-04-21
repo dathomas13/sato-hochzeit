@@ -10,12 +10,12 @@
 // ============================================================
 
 export const firebaseConfig = {
-  apiKey: "DEIN_API_KEY",
-  authDomain: "DEIN_PROJEKT.firebaseapp.com",
-  projectId: "DEIN_PROJEKT",
-  storageBucket: "DEIN_PROJEKT.appspot.com",
-  messagingSenderId: "DEINE_SENDER_ID",
-  appId: "DEINE_APP_ID"
+  apiKey: "AIzaSyBEhzmyq8wFB_J9VbLECRSdeWPNdM47JsY",
+  authDomain: "sato-hochzeit-866b0.firebaseapp.com",
+  projectId: "sato-hochzeit-866b0",
+  storageBucket: "sato-hochzeit-866b0.firebasestorage.app",
+  messagingSenderId: "126061665193",
+  appId: "1:126061665193:web:31c276d75102f55ce842b8"
 };
 
 // Prüfung, ob die Config schon gesetzt wurde.
