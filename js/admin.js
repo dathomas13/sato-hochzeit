@@ -115,7 +115,10 @@ if (firebaseReady) {
 if (loginForm) {
   loginForm.addEventListener("submit", async (evt) => {
     evt.preventDefault();
-    if (!firebaseReady) return;
+    if (!firebaseReady) {
+      setLoginStatus("Firebase konnte nicht geladen werden. Bitte Seite neu laden.", "error");
+      return;
+    }
 
     const email = document.getElementById("login-email").value.trim();
     const password = document.getElementById("login-password").value;
@@ -139,6 +142,8 @@ if (loginForm) {
         msg = "Kein Account mit dieser Email gefunden.";
       } else if (code.includes("too-many-requests")) {
         msg = "Zu viele Versuche. Bitte später erneut versuchen.";
+      } else if (code.includes("operation-not-allowed")) {
+        msg = "Email/Passwort-Login ist in Firebase nicht aktiviert. Bitte in der Firebase Console unter Authentication → Sign-in method aktivieren.";
       } else if (code.includes("network")) {
         msg = "Netzwerkfehler – bitte Verbindung prüfen.";
       }
