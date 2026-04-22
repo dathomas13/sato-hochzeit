@@ -3,6 +3,9 @@
    Palette: Warm Ivory #F7F4EF · Dusty Steel Blue #6B8BA4 · Charcoal Slate #2C3840
    ============================================================ */
 
+/* Stellt sicher dass das HTML hidden-Attribut nie von display-Klassen überschrieben wird */
+[hidden] { display: none !important; }
+
 :root {
   --gold: #6B8BA4;
   --gold-light: #A4C0D2;
