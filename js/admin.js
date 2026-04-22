@@ -102,12 +102,17 @@ try {
 // ------------------------------------------------------------
 if (firebaseReady) {
   onAuthStateChanged(auth, (user) => {
-    if (user) {
-      showDashboard(user);
-      startGuestListener();
-    } else {
-      showLogin();
-      stopGuestListener();
+    console.log("[Auth]", user ? `eingeloggt als ${user.email}` : "ausgeloggt");
+    try {
+      if (user) {
+        showDashboard(user);
+        startGuestListener();
+      } else {
+        showLogin();
+        stopGuestListener();
+      }
+    } catch (err) {
+      console.error("[Admin] Fehler im Auth-Handler:", err);
     }
   });
 }
@@ -115,7 +120,10 @@ if (firebaseReady) {
 if (loginForm) {
   loginForm.addEventListener("submit", async (evt) => {
     evt.preventDefault();
-    if (!firebaseReady) return;
+    if (!firebaseReady) {
+      setLoginStatus("Firebase konnte nicht geladen werden. Bitte Seite neu laden.", "error");
+      return;
+    }
 
     const email = document.getElementById("login-email").value.trim();
     const password = document.getElementById("login-password").value;
@@ -127,8 +135,11 @@ if (loginForm) {
 
     setLoginStatus("Wird eingeloggt…");
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const cred = await signInWithEmailAndPassword(auth, email, password);
       setLoginStatus("");
+      // Direkt-Fallback: Dashboard einblenden falls onAuthStateChanged nicht greift
+      showDashboard(cred.user);
+      startGuestListener();
     } catch (err) {
       console.error(err);
       const code = err.code || "";
@@ -139,6 +150,8 @@ if (loginForm) {
         msg = "Kein Account mit dieser Email gefunden.";
       } else if (code.includes("too-many-requests")) {
         msg = "Zu viele Versuche. Bitte später erneut versuchen.";
+      } else if (code.includes("operation-not-allowed")) {
+        msg = "Email/Passwort-Login ist in Firebase nicht aktiviert. Bitte in der Firebase Console unter Authentication → Sign-in method aktivieren.";
       } else if (code.includes("network")) {
         msg = "Netzwerkfehler – bitte Verbindung prüfen.";
       }
@@ -172,7 +185,7 @@ function showDashboard(user) {
 // Realtime-Gästeliste
 // ------------------------------------------------------------
 function startGuestListener() {
-  if (!db) return;
+  if (!db || unsubscribe) return; // Verhindert doppelte Listener
   const q = query(collection(db, "rsvp"), orderBy("timestamp", "desc"));
   setAdminStatus("Lade Daten…");
   unsubscribe = onSnapshot(
