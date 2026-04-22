@@ -729,6 +729,9 @@ nav.scrolled .nav__links a {
   display: block;
   animation: successFadeIn 0.45s ease both;
 }
+.form--done > :not(.success-msg) {
+  display: none !important;
+}
 @keyframes successFadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }

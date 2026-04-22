@@ -277,10 +277,7 @@ function showSuccess(attendance) {
   const msg = attendance === "no" ? successNo : successYes;
   [successYes, successNo].forEach((m) => m?.classList.remove("show"));
   msg?.classList.add("show");
-  // Form abdimmen
-  form.style.opacity = "0.25";
-  form.style.pointerEvents = "none";
-  submitBtn.style.display = "none";
+  form.classList.add("form--done");
   msg?.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
