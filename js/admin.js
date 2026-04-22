@@ -16,7 +16,10 @@ import {
   collection,
   onSnapshot,
   query,
-  orderBy
+  orderBy,
+  doc,
+  deleteDoc,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // ------------------------------------------------------------
@@ -235,7 +238,7 @@ function getFilteredSortedGuests() {
   let list = allGuests.filter((g) => {
     if (filter !== "all" && g.attendance !== filter) return false;
     if (search) {
-      const hay = `${g.name || ""} ${g.email || ""}`.toLowerCase();
+      const hay = `${g.name || ""} ${g.email || ""} ${g.guests || ""}`.toLowerCase();
       if (!hay.includes(search)) return false;
     }
     return true;
@@ -289,7 +292,7 @@ function renderTable() {
   const list = getFilteredSortedGuests();
 
   if (list.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7" class="guest-table__empty">Keine Einträge.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" class="guest-table__empty">Keine Einträge.</td></tr>`;
   } else {
     tbody.innerHTML = list
       .map((g) => {
@@ -304,6 +307,10 @@ function renderTable() {
             <td>${escapeHtml(formatShuttle(g.shuttle) || "–")}</td>
             <td>${escapeHtml(g.guests || "–")}</td>
             <td>${escapeHtml(formatTimestamp(g.timestamp))}</td>
+            <td style="white-space:nowrap">
+              <button class="btn--action btn--edit" data-action="edit" data-id="${escapeHtml(g.id)}">Bearbeiten</button>
+              <button class="btn--action btn--delete" data-action="delete" data-id="${escapeHtml(g.id)}" data-name="${escapeHtml(g.name || "")}">Löschen</button>
+            </td>
           </tr>`;
       })
       .join("");
@@ -317,6 +324,83 @@ function renderTable() {
     }
   });
 }
+
+// ------------------------------------------------------------
+// Delete & Edit
+// ------------------------------------------------------------
+let editingId = null;
+
+const editModalOverlay = document.getElementById("edit-modal-overlay");
+const editCancelBtn = document.getElementById("edit-cancel");
+const editSaveBtn = document.getElementById("edit-save");
+
+async function deleteGuest(id, name) {
+  if (!confirm(`Eintrag von „${name}" wirklich löschen?`)) return;
+  try {
+    await deleteDoc(doc(db, "rsvp", id));
+    setAdminStatus(`Eintrag von „${name}" wurde gelöscht.`, "success");
+  } catch (err) {
+    console.error(err);
+    setAdminStatus("Löschen fehlgeschlagen. Bitte erneut versuchen.", "error");
+  }
+}
+
+function openEditModal(guest) {
+  editingId = guest.id;
+  document.getElementById("edit-name").value = guest.name || "";
+  document.getElementById("edit-attendance").value = guest.attendance || "yes";
+  document.getElementById("edit-allergies").value = guest.allergies || "";
+  document.getElementById("edit-wishes").value = guest.wishes || "";
+  document.getElementById("edit-shuttle").value = guest.shuttle || "";
+  document.getElementById("edit-guests").value = guest.guests || "";
+  editModalOverlay.hidden = false;
+}
+
+function closeEditModal() {
+  editModalOverlay.hidden = true;
+  editingId = null;
+}
+
+editCancelBtn?.addEventListener("click", closeEditModal);
+
+editModalOverlay?.addEventListener("click", (evt) => {
+  if (evt.target === editModalOverlay) closeEditModal();
+});
+
+editSaveBtn?.addEventListener("click", async () => {
+  if (!editingId) return;
+  editSaveBtn.disabled = true;
+  const data = {
+    name: document.getElementById("edit-name").value.trim(),
+    attendance: document.getElementById("edit-attendance").value,
+    allergies: document.getElementById("edit-allergies").value.trim(),
+    wishes: document.getElementById("edit-wishes").value.trim(),
+    shuttle: document.getElementById("edit-shuttle").value,
+    guests: document.getElementById("edit-guests").value.trim()
+  };
+  try {
+    await updateDoc(doc(db, "rsvp", editingId), data);
+    closeEditModal();
+    setAdminStatus("Eintrag wurde aktualisiert.", "success");
+  } catch (err) {
+    console.error(err);
+    setAdminStatus("Speichern fehlgeschlagen. Bitte erneut versuchen.", "error");
+  } finally {
+    editSaveBtn.disabled = false;
+  }
+});
+
+tbody?.addEventListener("click", (evt) => {
+  const btn = evt.target.closest("[data-action]");
+  if (!btn) return;
+  const id = btn.dataset.id;
+  if (btn.dataset.action === "delete") {
+    deleteGuest(id, btn.dataset.name);
+  } else if (btn.dataset.action === "edit") {
+    const guest = allGuests.find((g) => g.id === id);
+    if (guest) openEditModal(guest);
+  }
+});
 
 // ------------------------------------------------------------
 // Filter / Sort Events
