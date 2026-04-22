@@ -411,6 +411,21 @@
       </div>
     </section>
 
+  <!-- Bestätigungs-Modal: Name bereits vorhanden -->
+  <div id="confirm-overlay" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+      <h2 class="modal__title" id="confirm-title">Bereits angemeldet</h2>
+      <p style="margin-bottom: 1.5rem; color: var(--navy); line-height: 1.6;">
+        Unter diesem Namen liegt bereits eine Anmeldung vor.<br>
+        Möchtest du deine Angaben wirklich aktualisieren?
+      </p>
+      <div class="modal__actions">
+        <button type="button" class="btn--ghost" id="confirm-cancel">Abbrechen</button>
+        <button type="button" class="btn--ghost" id="confirm-ok" style="border-color: var(--navy); background: var(--navy); color: var(--cream);">Ja, aktualisieren</button>
+      </div>
+    </div>
+  </div>
+
   </main>
 
   <footer class="footer">

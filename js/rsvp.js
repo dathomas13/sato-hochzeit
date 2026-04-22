@@ -236,7 +236,42 @@ function nameToDocId(name) {
     .slice(0, 120);
 }
 
-async function submitRSVP(data) {
+async function checkExisting(name) {
+  if (!firebaseReady || !db) return null;
+  try {
+    const snap = await getDoc(doc(db, "rsvp", nameToDocId(name)));
+    return snap.exists() ? snap.data() : null;
+  } catch (err) {
+    console.warn("Konnte bestehenden Eintrag nicht lesen:", err);
+    return null;
+  }
+}
+
+function showConfirmModal() {
+  return new Promise((resolve) => {
+    const overlay = document.getElementById("confirm-overlay");
+    const okBtn = document.getElementById("confirm-ok");
+    const cancelBtn = document.getElementById("confirm-cancel");
+    overlay.hidden = false;
+
+    function done(result) {
+      overlay.hidden = true;
+      okBtn.removeEventListener("click", onOk);
+      cancelBtn.removeEventListener("click", onCancel);
+      overlay.removeEventListener("click", onOverlay);
+      resolve(result);
+    }
+    function onOk() { done(true); }
+    function onCancel() { done(false); }
+    function onOverlay(e) { if (e.target === overlay) done(false); }
+
+    okBtn.addEventListener("click", onOk);
+    cancelBtn.addEventListener("click", onCancel);
+    overlay.addEventListener("click", onOverlay);
+  });
+}
+
+async function submitRSVP(data, existing) {
   if (!firebaseReady || !db) {
     throw new Error(
       "Die Verbindung zur Datenbank ist noch nicht eingerichtet. " +
@@ -244,17 +279,7 @@ async function submitRSVP(data) {
     );
   }
 
-  const docId = nameToDocId(data.name);
-  const ref = doc(db, "rsvp", docId);
-
-  let existing = null;
-  try {
-    const snap = await getDoc(ref);
-    if (snap.exists()) existing = snap.data();
-  } catch (err) {
-    console.warn("Konnte bestehenden Eintrag nicht lesen:", err);
-  }
-
+  const ref = doc(db, "rsvp", nameToDocId(data.name));
   await setDoc(
     ref,
     {
@@ -317,10 +342,23 @@ if (form) {
     }
 
     submitBtn.disabled = true;
-    setStatus("Wird gesendet…", "info");
+    setStatus("Wird geprüft…", "info");
+
+    const existing = await checkExisting(data.name);
+
+    if (existing) {
+      setStatus("");
+      submitBtn.disabled = false;
+      const confirmed = await showConfirmModal();
+      if (!confirmed) return;
+      submitBtn.disabled = true;
+      setStatus("Wird gesendet…", "info");
+    } else {
+      setStatus("Wird gesendet…", "info");
+    }
 
     try {
-      await submitRSVP(data);
+      await submitRSVP(data, existing);
       setStatus("");
       showSuccess(data.attendance);
     } catch (err) {
