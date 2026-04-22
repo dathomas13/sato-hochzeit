@@ -102,12 +102,17 @@ try {
 // ------------------------------------------------------------
 if (firebaseReady) {
   onAuthStateChanged(auth, (user) => {
-    if (user) {
-      showDashboard(user);
-      startGuestListener();
-    } else {
-      showLogin();
-      stopGuestListener();
+    console.log("[Auth]", user ? `eingeloggt als ${user.email}` : "ausgeloggt");
+    try {
+      if (user) {
+        showDashboard(user);
+        startGuestListener();
+      } else {
+        showLogin();
+        stopGuestListener();
+      }
+    } catch (err) {
+      console.error("[Admin] Fehler im Auth-Handler:", err);
     }
   });
 }
@@ -130,8 +135,11 @@ if (loginForm) {
 
     setLoginStatus("Wird eingeloggt…");
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const cred = await signInWithEmailAndPassword(auth, email, password);
       setLoginStatus("");
+      // Direkt-Fallback: Dashboard einblenden falls onAuthStateChanged nicht greift
+      showDashboard(cred.user);
+      startGuestListener();
     } catch (err) {
       console.error(err);
       const code = err.code || "";
@@ -177,7 +185,7 @@ function showDashboard(user) {
 // Realtime-Gästeliste
 // ------------------------------------------------------------
 function startGuestListener() {
-  if (!db) return;
+  if (!db || unsubscribe) return; // Verhindert doppelte Listener
   const q = query(collection(db, "rsvp"), orderBy("timestamp", "desc"));
   setAdminStatus("Lade Daten…");
   unsubscribe = onSnapshot(
