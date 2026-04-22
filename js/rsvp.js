@@ -328,9 +328,15 @@ if (form) {
       showSuccess(data.attendance);
     } catch (err) {
       console.error(err);
+      const isPermissionError =
+        err.code === "permission-denied" ||
+        (err.message && err.message.toLowerCase().includes("permission"));
       setStatus(
-        err.message ||
-          "Es ist ein Fehler aufgetreten. Bitte versuche es erneut.",
+        isPermissionError
+          ? "Deine Antwort konnte nicht gespeichert werden (Zugriffsrechte). Bitte schreib uns direkt an " +
+              weddingConfig.contactEmail
+          : err.message ||
+              "Es ist ein Fehler aufgetreten. Bitte versuche es erneut.",
         "error"
       );
       submitBtn.disabled = false;

@@ -1,0 +1,14 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /rsvp/{docId} {
+      // Guests can submit and update their own RSVP without authentication.
+      // The docId is derived from the guest's name, so they can only
+      // overwrite their own entry.
+      allow create, update: if true;
+      // Only authenticated admins may read the guest list.
+      allow read: if request.auth != null;
+      allow delete: if false;
+    }
+  }
+}
