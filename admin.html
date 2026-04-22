@@ -109,11 +109,12 @@
             <th data-sort="shuttle">Fahrservice</th>
             <th>Weitere Gäste</th>
             <th data-sort="timestamp">Zeitpunkt</th>
+            <th>Aktionen</th>
           </tr>
         </thead>
         <tbody id="guest-tbody">
           <tr>
-            <td colspan="7" class="guest-table__empty">Lade Daten…</td>
+            <td colspan="8" class="guest-table__empty">Lade Daten…</td>
           </tr>
         </tbody>
       </table>
@@ -121,6 +122,50 @@
 
     <p id="admin-status" class="form__status" role="status" aria-live="polite"></p>
   </section>
+
+  <!-- Edit-Modal -->
+  <div id="edit-modal-overlay" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title">
+      <h2 class="modal__title" id="edit-modal-title">Eintrag bearbeiten</h2>
+      <div class="form__field">
+        <label class="form__label" for="edit-name">Name</label>
+        <input type="text" id="edit-name" class="form__input" />
+      </div>
+      <div class="form__field">
+        <label class="form__label" for="edit-attendance">Zusage</label>
+        <select id="edit-attendance" class="form__input">
+          <option value="yes">Zusage</option>
+          <option value="maybe">Vielleicht</option>
+          <option value="no">Absage</option>
+        </select>
+      </div>
+      <div class="form__field">
+        <label class="form__label" for="edit-allergies">Allergien</label>
+        <input type="text" id="edit-allergies" class="form__input" />
+      </div>
+      <div class="form__field">
+        <label class="form__label" for="edit-wishes">Musikwunsch</label>
+        <input type="text" id="edit-wishes" class="form__input" />
+      </div>
+      <div class="form__field">
+        <label class="form__label" for="edit-shuttle">Fahrservice</label>
+        <select id="edit-shuttle" class="form__input">
+          <option value="">–</option>
+          <option value="bus-1">Bus 1:00 Uhr</option>
+          <option value="bus-3">Bus 3:00 Uhr</option>
+          <option value="none">Selbst</option>
+        </select>
+      </div>
+      <div class="form__field">
+        <label class="form__label" for="edit-guests">Weitere Gäste</label>
+        <input type="text" id="edit-guests" class="form__input" />
+      </div>
+      <div class="modal__actions">
+        <button type="button" class="btn--ghost" id="edit-cancel">Abbrechen</button>
+        <button type="button" class="btn--ghost btn--save" id="edit-save">Speichern</button>
+      </div>
+    </div>
+  </div>
 
   <script type="module" src="js/admin.js"></script>
 </body>
