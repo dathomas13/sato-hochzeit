@@ -32,9 +32,12 @@ const loginStatus = document.getElementById("login-status");
 const adminUser = document.getElementById("admin-user");
 const adminStatus = document.getElementById("admin-status");
 
-const statYes = document.getElementById("stat-yes");
+const statPersons = document.getElementById("stat-persons");
+const statYesSub = document.getElementById("stat-yes");
 const statMaybe = document.getElementById("stat-maybe");
+const statMaybeSub = document.getElementById("stat-maybe-sub");
 const statNo = document.getElementById("stat-no");
+const statNoSub = document.getElementById("stat-no-sub");
 const statTotal = document.getElementById("stat-total");
 
 const filterAttendance = document.getElementById("filter-attendance");
@@ -222,12 +225,20 @@ function stopGuestListener() {
 // ------------------------------------------------------------
 function renderStats() {
   const counts = { yes: 0, maybe: 0, no: 0 };
+  let yesPersons = 0, maybePersons = 0, noPersons = 0;
   for (const g of allGuests) {
     if (counts[g.attendance] !== undefined) counts[g.attendance]++;
+    const n = 1 + parseGuests(g.guests).length;
+    if (g.attendance === "yes") yesPersons += n;
+    else if (g.attendance === "maybe") maybePersons += n;
+    else if (g.attendance === "no") noPersons += n;
   }
-  statYes.textContent = counts.yes;
-  statMaybe.textContent = counts.maybe;
-  statNo.textContent = counts.no;
+  if (statPersons) statPersons.textContent = yesPersons;
+  if (statYesSub) statYesSub.textContent = `${counts.yes} Gruppen`;
+  statMaybe.textContent = maybePersons;
+  if (statMaybeSub) statMaybeSub.textContent = `${counts.maybe} Gruppen`;
+  statNo.textContent = noPersons;
+  if (statNoSub) statNoSub.textContent = `${counts.no} Gruppen`;
   statTotal.textContent = allGuests.length;
 }
 
@@ -269,6 +280,14 @@ function formatShuttle(val) {
   return "";
 }
 
+function parseGuests(str) {
+  if (!str || !str.trim()) return [];
+  return str
+    .split(/[,;\n]|\s+und\s+|\s+&\s+/i)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0);
+}
+
 function escapeHtml(str) {
   return (str ?? "")
     .toString()
@@ -298,6 +317,10 @@ function renderTable() {
       .map((g) => {
         const badgeClass = `badge--${g.attendance || "no"}`;
         const label = ATTENDANCE_LABEL[g.attendance] || "–";
+        const parsed = parseGuests(g.guests);
+        const guestsHtml = parsed.length > 0
+          ? `<span class="guests-count-badge">${parsed.length}</span>${parsed.map(escapeHtml).join(", ")}`
+          : "–";
         return `
           <tr>
             <td>${escapeHtml(g.name)}</td>
@@ -305,7 +328,7 @@ function renderTable() {
             <td>${escapeHtml(g.allergies || "–")}</td>
             <td>${escapeHtml(g.wishes || "–")}</td>
             <td>${escapeHtml(formatShuttle(g.shuttle) || "–")}</td>
-            <td>${escapeHtml(g.guests || "–")}</td>
+            <td>${guestsHtml}</td>
             <td>${escapeHtml(formatTimestamp(g.timestamp))}</td>
             <td style="white-space:nowrap">
               <button class="btn--action btn--edit" data-action="edit" data-id="${escapeHtml(g.id)}">Bearbeiten</button>
@@ -436,16 +459,31 @@ exportCsvBtn?.addEventListener("click", () => {
     setAdminStatus("Keine Daten zum Exportieren.", "error");
     return;
   }
-  const header = ["Name", "Zusage", "Allergien", "Wünsche", "Fahrservice", "Weitere Gäste", "Zeitpunkt"];
-  const rows = list.map((g) => [
-    g.name,
-    ATTENDANCE_LABEL[g.attendance] || "",
-    g.allergies || "",
-    g.wishes || "",
-    formatShuttle(g.shuttle) || "",
-    g.guests || "",
-    formatTimestamp(g.timestamp)
-  ]);
+  const header = ["Name", "Zusage", "Allergien", "Wünsche", "Fahrservice", "Zeitpunkt"];
+  const rows = [];
+  let personCount = 0;
+  for (const g of list) {
+    rows.push([
+      g.name,
+      ATTENDANCE_LABEL[g.attendance] || "",
+      g.allergies || "",
+      g.wishes || "",
+      formatShuttle(g.shuttle) || "",
+      formatTimestamp(g.timestamp)
+    ]);
+    personCount++;
+    for (const name of parseGuests(g.guests)) {
+      rows.push([
+        name,
+        ATTENDANCE_LABEL[g.attendance] || "",
+        "",
+        "",
+        formatShuttle(g.shuttle) || "",
+        formatTimestamp(g.timestamp)
+      ]);
+      personCount++;
+    }
+  }
   const csv =
     "﻿" + // BOM für Excel
     [header, ...rows].map((r) => r.map(csvEscape).join(",")).join("\r\n");
@@ -460,12 +498,53 @@ exportCsvBtn?.addEventListener("click", () => {
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
-  setAdminStatus(`Export erstellt (${list.length} Einträge).`, "success");
+  setAdminStatus(`Export erstellt (${personCount} Personen).`, "success");
 });
 
 // ------------------------------------------------------------
 // Export: PDF via Print
 // ------------------------------------------------------------
 exportPdfBtn?.addEventListener("click", () => {
+  const list = getFilteredSortedGuests();
+  const originalHTML = tbody.innerHTML;
+
+  // Expand each entry into individual person rows
+  const expanded = list.flatMap((g) => {
+    const additional = parseGuests(g.guests).map((name) => ({
+      ...g,
+      name,
+      guests: "",
+      allergies: "",
+      wishes: ""
+    }));
+    return [g, ...additional];
+  });
+
+  tbody.innerHTML = expanded
+    .map((g) => {
+      const badgeClass = `badge--${g.attendance || "no"}`;
+      const label = ATTENDANCE_LABEL[g.attendance] || "–";
+      const parsed = parseGuests(g.guests);
+      const guestsHtml = parsed.length > 0
+        ? `<span class="guests-count-badge">${parsed.length}</span>${parsed.map(escapeHtml).join(", ")}`
+        : "–";
+      return `<tr>
+        <td>${escapeHtml(g.name)}</td>
+        <td><span class="badge ${badgeClass}">${escapeHtml(label)}</span></td>
+        <td>${escapeHtml(g.allergies || "–")}</td>
+        <td>${escapeHtml(g.wishes || "–")}</td>
+        <td>${escapeHtml(formatShuttle(g.shuttle) || "–")}</td>
+        <td>${guestsHtml}</td>
+        <td>${escapeHtml(formatTimestamp(g.timestamp))}</td>
+        <td></td>
+      </tr>`;
+    })
+    .join("");
+
+  const restore = () => {
+    tbody.innerHTML = originalHTML;
+    window.removeEventListener("afterprint", restore);
+  };
+  window.addEventListener("afterprint", restore);
   window.print();
 });
