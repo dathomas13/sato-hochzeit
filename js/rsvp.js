@@ -13,6 +13,7 @@ import {
   getFirestore,
   doc,
   setDoc,
+  getDoc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -235,21 +236,14 @@ function nameToDocId(name) {
     .slice(0, 120);
 }
 
-const RSVP_STORAGE_KEY = "rsvp_submitted";
-
-function wasAlreadySubmitted(name) {
+async function checkNameExists(name) {
+  if (!firebaseReady || !db) return false;
   try {
-    return localStorage.getItem(RSVP_STORAGE_KEY) === nameToDocId(name);
-  } catch {
+    const snap = await getDoc(doc(db, "rsvp-names", nameToDocId(name)));
+    return snap.exists();
+  } catch (err) {
+    console.warn("Namens-Prüfung fehlgeschlagen:", err);
     return false;
-  }
-}
-
-function markAsSubmitted(name) {
-  try {
-    localStorage.setItem(RSVP_STORAGE_KEY, nameToDocId(name));
-  } catch {
-    // localStorage nicht verfügbar – ignorieren
   }
 }
 
@@ -285,9 +279,9 @@ async function submitRSVP(data, isUpdate) {
     );
   }
 
-  const ref = doc(db, "rsvp", nameToDocId(data.name));
+  const docId = nameToDocId(data.name);
   await setDoc(
-    ref,
+    doc(db, "rsvp", docId),
     {
       name: data.name,
       attendance: data.attendance,
@@ -300,6 +294,8 @@ async function submitRSVP(data, isUpdate) {
     },
     { merge: true }
   );
+  // Öffentlich lesbare Namen-Collection – nur Name, keine Details
+  await setDoc(doc(db, "rsvp-names", docId), { name: data.name });
 }
 
 function showSuccess(attendance) {
@@ -345,19 +341,24 @@ if (form) {
       return;
     }
 
-    const isUpdate = wasAlreadySubmitted(data.name);
+    submitBtn.disabled = true;
+    setStatus("Wird geprüft…", "info");
+
+    const isUpdate = await checkNameExists(data.name);
 
     if (isUpdate) {
+      setStatus("");
+      submitBtn.disabled = false;
       const confirmed = await showConfirmModal();
       if (!confirmed) return;
+      submitBtn.disabled = true;
+      setStatus("Wird gesendet…", "info");
+    } else {
+      setStatus("Wird gesendet…", "info");
     }
-
-    submitBtn.disabled = true;
-    setStatus("Wird gesendet…", "info");
 
     try {
       await submitRSVP(data, isUpdate);
-      markAsSubmitted(data.name);
       setStatus("");
       showSuccess(data.attendance);
     } catch (err) {
