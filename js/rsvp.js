@@ -13,7 +13,6 @@ import {
   getFirestore,
   doc,
   setDoc,
-  getDoc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -236,14 +235,21 @@ function nameToDocId(name) {
     .slice(0, 120);
 }
 
-async function checkExisting(name) {
-  if (!firebaseReady || !db) return null;
+const RSVP_STORAGE_KEY = "rsvp_submitted";
+
+function wasAlreadySubmitted(name) {
   try {
-    const snap = await getDoc(doc(db, "rsvp", nameToDocId(name)));
-    return snap.exists() ? snap.data() : null;
-  } catch (err) {
-    console.warn("Konnte bestehenden Eintrag nicht lesen:", err);
-    return null;
+    return localStorage.getItem(RSVP_STORAGE_KEY) === nameToDocId(name);
+  } catch {
+    return false;
+  }
+}
+
+function markAsSubmitted(name) {
+  try {
+    localStorage.setItem(RSVP_STORAGE_KEY, nameToDocId(name));
+  } catch {
+    // localStorage nicht verfügbar – ignorieren
   }
 }
 
@@ -271,7 +277,7 @@ function showConfirmModal() {
   });
 }
 
-async function submitRSVP(data, existing) {
+async function submitRSVP(data, isUpdate) {
   if (!firebaseReady || !db) {
     throw new Error(
       "Die Verbindung zur Datenbank ist noch nicht eingerichtet. " +
@@ -290,12 +296,10 @@ async function submitRSVP(data, existing) {
       guests: data.guests,
       shuttle: data.shuttle,
       timestamp: serverTimestamp(),
-      ...(existing ? { updated: true } : {})
+      ...(isUpdate ? { updated: true } : {})
     },
     { merge: true }
   );
-
-  return { updated: !!existing };
 }
 
 function showSuccess(attendance) {
@@ -341,24 +345,19 @@ if (form) {
       return;
     }
 
-    submitBtn.disabled = true;
-    setStatus("Wird geprüft…", "info");
+    const isUpdate = wasAlreadySubmitted(data.name);
 
-    const existing = await checkExisting(data.name);
-
-    if (existing) {
-      setStatus("");
-      submitBtn.disabled = false;
+    if (isUpdate) {
       const confirmed = await showConfirmModal();
       if (!confirmed) return;
-      submitBtn.disabled = true;
-      setStatus("Wird gesendet…", "info");
-    } else {
-      setStatus("Wird gesendet…", "info");
     }
 
+    submitBtn.disabled = true;
+    setStatus("Wird gesendet…", "info");
+
     try {
-      await submitRSVP(data, existing);
+      await submitRSVP(data, isUpdate);
+      markAsSubmitted(data.name);
       setStatus("");
       showSuccess(data.attendance);
     } catch (err) {
