@@ -361,6 +361,7 @@ async function deleteGuest(id, name) {
   if (!confirm(`Eintrag von „${name}" wirklich löschen?`)) return;
   try {
     await deleteDoc(doc(db, "rsvp", id));
+    await deleteDoc(doc(db, "rsvp-names", id));
     setAdminStatus(`Eintrag von „${name}" wurde gelöscht.`, "success");
   } catch (err) {
     console.error(err);
