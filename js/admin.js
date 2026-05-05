@@ -32,11 +32,11 @@ const loginStatus = document.getElementById("login-status");
 const adminUser = document.getElementById("admin-user");
 const adminStatus = document.getElementById("admin-status");
 
-const statYes = document.getElementById("stat-yes");
+const statPersons = document.getElementById("stat-persons");
+const statYesSub = document.getElementById("stat-yes");
 const statMaybe = document.getElementById("stat-maybe");
 const statNo = document.getElementById("stat-no");
 const statTotal = document.getElementById("stat-total");
-const statPersons = document.getElementById("stat-persons");
 
 const filterAttendance = document.getElementById("filter-attendance");
 const filterSearch = document.getElementById("filter-search");
@@ -230,11 +230,11 @@ function renderStats() {
       persons += 1 + parseGuests(g.guests).length;
     }
   }
-  statYes.textContent = counts.yes;
+  if (statPersons) statPersons.textContent = persons;
+  if (statYesSub) statYesSub.textContent = `${counts.yes} Anmeldungen`;
   statMaybe.textContent = counts.maybe;
   statNo.textContent = counts.no;
   statTotal.textContent = allGuests.length;
-  if (statPersons) statPersons.textContent = persons;
 }
 
 function getFilteredSortedGuests() {
@@ -500,5 +500,46 @@ exportCsvBtn?.addEventListener("click", () => {
 // Export: PDF via Print
 // ------------------------------------------------------------
 exportPdfBtn?.addEventListener("click", () => {
+  const list = getFilteredSortedGuests();
+  const originalHTML = tbody.innerHTML;
+
+  // Expand each entry into individual person rows
+  const expanded = list.flatMap((g) => {
+    const additional = parseGuests(g.guests).map((name) => ({
+      ...g,
+      name,
+      guests: "",
+      allergies: "",
+      wishes: ""
+    }));
+    return [g, ...additional];
+  });
+
+  tbody.innerHTML = expanded
+    .map((g) => {
+      const badgeClass = `badge--${g.attendance || "no"}`;
+      const label = ATTENDANCE_LABEL[g.attendance] || "–";
+      const parsed = parseGuests(g.guests);
+      const guestsHtml = parsed.length > 0
+        ? `<span class="guests-count-badge">${parsed.length}</span>${parsed.map(escapeHtml).join(", ")}`
+        : "–";
+      return `<tr>
+        <td>${escapeHtml(g.name)}</td>
+        <td><span class="badge ${badgeClass}">${escapeHtml(label)}</span></td>
+        <td>${escapeHtml(g.allergies || "–")}</td>
+        <td>${escapeHtml(g.wishes || "–")}</td>
+        <td>${escapeHtml(formatShuttle(g.shuttle) || "–")}</td>
+        <td>${guestsHtml}</td>
+        <td>${escapeHtml(formatTimestamp(g.timestamp))}</td>
+        <td></td>
+      </tr>`;
+    })
+    .join("");
+
+  const restore = () => {
+    tbody.innerHTML = originalHTML;
+    window.removeEventListener("afterprint", restore);
+  };
+  window.addEventListener("afterprint", restore);
   window.print();
 });

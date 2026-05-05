@@ -862,7 +862,6 @@ nav.scrolled .nav__links a {
 .stat--maybe { border-left-color: var(--gold); }
 .stat--no { border-left-color: var(--danger); }
 .stat--total { border-left-color: var(--navy); }
-.stat--persons { border-left-color: var(--gold-dark); }
 .stat__label {
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -876,6 +875,11 @@ nav.scrolled .nav__links a {
   color: var(--navy);
   margin: 0;
   font-weight: 500;
+}
+.stat__sub {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin: 0.25rem 0 0;
 }
 
 .admin-toolbar {
