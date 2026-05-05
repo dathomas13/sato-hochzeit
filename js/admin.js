@@ -36,6 +36,7 @@ const statYes = document.getElementById("stat-yes");
 const statMaybe = document.getElementById("stat-maybe");
 const statNo = document.getElementById("stat-no");
 const statTotal = document.getElementById("stat-total");
+const statPersons = document.getElementById("stat-persons");
 
 const filterAttendance = document.getElementById("filter-attendance");
 const filterSearch = document.getElementById("filter-search");
@@ -222,13 +223,18 @@ function stopGuestListener() {
 // ------------------------------------------------------------
 function renderStats() {
   const counts = { yes: 0, maybe: 0, no: 0 };
+  let persons = 0;
   for (const g of allGuests) {
     if (counts[g.attendance] !== undefined) counts[g.attendance]++;
+    if (g.attendance === "yes") {
+      persons += 1 + parseGuests(g.guests).length;
+    }
   }
   statYes.textContent = counts.yes;
   statMaybe.textContent = counts.maybe;
   statNo.textContent = counts.no;
   statTotal.textContent = allGuests.length;
+  if (statPersons) statPersons.textContent = persons;
 }
 
 function getFilteredSortedGuests() {
@@ -269,6 +275,14 @@ function formatShuttle(val) {
   return "";
 }
 
+function parseGuests(str) {
+  if (!str || !str.trim()) return [];
+  return str
+    .split(/[,;\n]|\s+und\s+|\s+&\s+/i)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0);
+}
+
 function escapeHtml(str) {
   return (str ?? "")
     .toString()
@@ -298,6 +312,10 @@ function renderTable() {
       .map((g) => {
         const badgeClass = `badge--${g.attendance || "no"}`;
         const label = ATTENDANCE_LABEL[g.attendance] || "–";
+        const parsed = parseGuests(g.guests);
+        const guestsHtml = parsed.length > 0
+          ? `<span class="guests-count-badge">${parsed.length}</span>${parsed.map(escapeHtml).join(", ")}`
+          : "–";
         return `
           <tr>
             <td>${escapeHtml(g.name)}</td>
@@ -305,7 +323,7 @@ function renderTable() {
             <td>${escapeHtml(g.allergies || "–")}</td>
             <td>${escapeHtml(g.wishes || "–")}</td>
             <td>${escapeHtml(formatShuttle(g.shuttle) || "–")}</td>
-            <td>${escapeHtml(g.guests || "–")}</td>
+            <td>${guestsHtml}</td>
             <td>${escapeHtml(formatTimestamp(g.timestamp))}</td>
             <td style="white-space:nowrap">
               <button class="btn--action btn--edit" data-action="edit" data-id="${escapeHtml(g.id)}">Bearbeiten</button>
@@ -436,16 +454,31 @@ exportCsvBtn?.addEventListener("click", () => {
     setAdminStatus("Keine Daten zum Exportieren.", "error");
     return;
   }
-  const header = ["Name", "Zusage", "Allergien", "Wünsche", "Fahrservice", "Weitere Gäste", "Zeitpunkt"];
-  const rows = list.map((g) => [
-    g.name,
-    ATTENDANCE_LABEL[g.attendance] || "",
-    g.allergies || "",
-    g.wishes || "",
-    formatShuttle(g.shuttle) || "",
-    g.guests || "",
-    formatTimestamp(g.timestamp)
-  ]);
+  const header = ["Name", "Zusage", "Allergien", "Wünsche", "Fahrservice", "Zeitpunkt"];
+  const rows = [];
+  let personCount = 0;
+  for (const g of list) {
+    rows.push([
+      g.name,
+      ATTENDANCE_LABEL[g.attendance] || "",
+      g.allergies || "",
+      g.wishes || "",
+      formatShuttle(g.shuttle) || "",
+      formatTimestamp(g.timestamp)
+    ]);
+    personCount++;
+    for (const name of parseGuests(g.guests)) {
+      rows.push([
+        name,
+        ATTENDANCE_LABEL[g.attendance] || "",
+        "",
+        "",
+        formatShuttle(g.shuttle) || "",
+        formatTimestamp(g.timestamp)
+      ]);
+      personCount++;
+    }
+  }
   const csv =
     "﻿" + // BOM für Excel
     [header, ...rows].map((r) => r.map(csvEscape).join(",")).join("\r\n");
@@ -460,7 +493,7 @@ exportCsvBtn?.addEventListener("click", () => {
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
-  setAdminStatus(`Export erstellt (${list.length} Einträge).`, "success");
+  setAdminStatus(`Export erstellt (${personCount} Personen).`, "success");
 });
 
 // ------------------------------------------------------------

@@ -862,6 +862,7 @@ nav.scrolled .nav__links a {
 .stat--maybe { border-left-color: var(--gold); }
 .stat--no { border-left-color: var(--danger); }
 .stat--total { border-left-color: var(--navy); }
+.stat--persons { border-left-color: var(--gold-dark); }
 .stat__label {
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -959,6 +960,22 @@ nav.scrolled .nav__links a {
 .badge--yes { background: #e0f0e6; color: var(--success); }
 .badge--maybe { background: #dde8f0; color: var(--gold-dark); }
 .badge--no { background: #fae0dc; color: var(--danger); }
+
+.guests-count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.3em;
+  height: 1.3em;
+  padding: 0 0.3em;
+  border-radius: 999px;
+  background: var(--cream-dark);
+  color: var(--navy-soft);
+  font-size: 0.7rem;
+  font-weight: 600;
+  vertical-align: middle;
+  margin-right: 0.25em;
+}
 
 /* ============================================================
    Timeline (Ablauf)
