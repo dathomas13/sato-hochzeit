@@ -236,14 +236,14 @@ function nameToDocId(name) {
     .slice(0, 120);
 }
 
-async function checkExisting(name) {
-  if (!firebaseReady || !db) return null;
+async function checkNameExists(name) {
+  if (!firebaseReady || !db) return false;
   try {
-    const snap = await getDoc(doc(db, "rsvp", nameToDocId(name)));
-    return snap.exists() ? snap.data() : null;
+    const snap = await getDoc(doc(db, "rsvp-names", nameToDocId(name)));
+    return snap.exists();
   } catch (err) {
-    console.warn("Konnte bestehenden Eintrag nicht lesen:", err);
-    return null;
+    console.warn("Namens-Prüfung fehlgeschlagen:", err);
+    return false;
   }
 }
 
@@ -271,7 +271,7 @@ function showConfirmModal() {
   });
 }
 
-async function submitRSVP(data, existing) {
+async function submitRSVP(data, isUpdate) {
   if (!firebaseReady || !db) {
     throw new Error(
       "Die Verbindung zur Datenbank ist noch nicht eingerichtet. " +
@@ -279,9 +279,9 @@ async function submitRSVP(data, existing) {
     );
   }
 
-  const ref = doc(db, "rsvp", nameToDocId(data.name));
+  const docId = nameToDocId(data.name);
   await setDoc(
-    ref,
+    doc(db, "rsvp", docId),
     {
       name: data.name,
       attendance: data.attendance,
@@ -290,12 +290,12 @@ async function submitRSVP(data, existing) {
       guests: data.guests,
       shuttle: data.shuttle,
       timestamp: serverTimestamp(),
-      ...(existing ? { updated: true } : {})
+      ...(isUpdate ? { updated: true } : {})
     },
     { merge: true }
   );
-
-  return { updated: !!existing };
+  // Öffentlich lesbare Namen-Collection – nur Name, keine Details
+  await setDoc(doc(db, "rsvp-names", docId), { name: data.name });
 }
 
 function showSuccess(attendance) {
@@ -344,9 +344,9 @@ if (form) {
     submitBtn.disabled = true;
     setStatus("Wird geprüft…", "info");
 
-    const existing = await checkExisting(data.name);
+    const isUpdate = await checkNameExists(data.name);
 
-    if (existing) {
+    if (isUpdate) {
       setStatus("");
       submitBtn.disabled = false;
       const confirmed = await showConfirmModal();
@@ -358,7 +358,7 @@ if (form) {
     }
 
     try {
-      await submitRSVP(data, existing);
+      await submitRSVP(data, isUpdate);
       setStatus("");
       showSuccess(data.attendance);
     } catch (err) {
