@@ -35,6 +35,7 @@ const adminStatus = document.getElementById("admin-status");
 const statPersons = document.getElementById("stat-persons");
 const statYesSub = document.getElementById("stat-yes");
 const statMaybe = document.getElementById("stat-maybe");
+const statMaybeSub = document.getElementById("stat-maybe-sub");
 const statNo = document.getElementById("stat-no");
 const statTotal = document.getElementById("stat-total");
 
@@ -223,16 +224,17 @@ function stopGuestListener() {
 // ------------------------------------------------------------
 function renderStats() {
   const counts = { yes: 0, maybe: 0, no: 0 };
-  let persons = 0;
+  let yesPersons = 0;
+  let maybePersons = 0;
   for (const g of allGuests) {
     if (counts[g.attendance] !== undefined) counts[g.attendance]++;
-    if (g.attendance === "yes") {
-      persons += 1 + parseGuests(g.guests).length;
-    }
+    if (g.attendance === "yes") yesPersons += 1 + parseGuests(g.guests).length;
+    if (g.attendance === "maybe") maybePersons += 1 + parseGuests(g.guests).length;
   }
-  if (statPersons) statPersons.textContent = persons;
-  if (statYesSub) statYesSub.textContent = `${counts.yes} Anmeldungen`;
-  statMaybe.textContent = counts.maybe;
+  if (statPersons) statPersons.textContent = yesPersons;
+  if (statYesSub) statYesSub.textContent = `${counts.yes} Gruppen`;
+  statMaybe.textContent = maybePersons;
+  if (statMaybeSub) statMaybeSub.textContent = `${counts.maybe} Gruppen`;
   statNo.textContent = counts.no;
   statTotal.textContent = allGuests.length;
 }

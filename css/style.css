@@ -1401,4 +1401,6 @@ img.gallery__slide {
   .stats { page-break-after: avoid; }
   .guest-table { font-size: 0.8rem; }
   .table-wrapper { box-shadow: none; overflow: visible; }
+  .guest-table th:last-child,
+  .guest-table td:last-child { display: none; }
 }
