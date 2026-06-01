@@ -88,7 +88,6 @@
             <span class="timeline__time">13:00</span>
             <div class="timeline__body">
               <p class="timeline__event">Ankunft der Gäste</p>
-              <p class="timeline__note">Herzlich willkommen – Türen öffnen</p>
             </div>
           </div>
 
@@ -96,7 +95,6 @@
             <span class="timeline__time" id="info-ceremony-time">13:30</span>
             <div class="timeline__body">
               <p class="timeline__event">Freie Trauung</p>
-              <p class="timeline__note" id="info-venue">Aurora by Event Passion</p>
             </div>
           </div>
 
@@ -116,7 +114,7 @@
           </div>
 
           <div class="timeline__item">
-            <span class="timeline__time">18:30</span>
+            <span class="timeline__time">19:00</span>
             <div class="timeline__body">
               <p class="timeline__event">Dinner</p>
             </div>
@@ -133,7 +131,7 @@
             <span class="timeline__time">ca. 3:00</span>
             <div class="timeline__body">
               <p class="timeline__event">Ende &amp; Fahrservice</p>
-              <p class="timeline__note">Busabfahrten 1:00 Uhr und 3:00 Uhr</p>
+              <p class="timeline__note">Busabfahrt um 3:00 Uhr</p>
             </div>
           </div>
 
@@ -204,20 +202,20 @@
         <div class="infos__grid">
           <article class="infos__item">
             <h3 class="infos__heading">Dresscode</h3>
-            <p class="infos__text">Sommerlich schick.</p>
+            <p class="infos__text">Wir freuen uns über einen festlich-modernen Look.</p>
           </article>
           <article class="infos__item">
             <h3 class="infos__heading">Geschenke</h3>
             <p class="infos__text">
-              Über Geldgeschenke für unsere gemeinsamen Abenteuer freuen wir
-              uns am meisten.
+              „Das größte Glück ist, diesen besonderen Tag mit euch zu teilen.
+              Für alle, die uns darüber hinaus etwas schenken möchten, freuen wir uns über eine Unterstützung für unsere Zukunftsträume.“
             </p>
           </article>
           <article class="infos__item">
             <h3 class="infos__heading">Heimfahrt</h3>
             <p class="infos__text">
               Feiert entspannt bis in die Nacht – wir organisieren einen
-              Fahrservice nach Hause. Die Feier endet gegen 3:00 Uhr.
+              Fahrservice nach Tirschenreuth. Die Feier endet gegen 3:00 Uhr.
             </p>
           </article>
         </div>
@@ -225,29 +223,47 @@
         <!-- Übernachtung: als eigene Untersektion mit Hotel-Karten -->
         <div class="hotels">
           <h3 class="hotels__heading">Übernachtung</h3>
-          <!-- TODO: Intro-Text anpassen -->
           <p class="hotels__intro">
             Kemnath und Umgebung bieten einige schöne Übernachtungsmöglichkeiten.
+            Die drei Häuser in Tirschenreuth liegen nah am Shuttle, zwei weitere Hotels in Kemnath sind ideal, wenn ihr direkt in der Nähe der Location übernachten möchtet.
+            Die Autos können problemlos über Nacht auf dem Gelände der Location geparkt werden.
           </p>
-          <div class="hotel-grid">
-            <!-- TODO: Hotelname, Adresse und Website-Link eintragen -->
-            <a href="#" class="hotel-card">
-              <p class="hotel-card__name"><!-- TODO: Hotelname --></p>
-              <p class="hotel-card__location"><!-- TODO: Adresse · ca. X km --></p>
-              <span class="hotel-card__link-label">Website →</span>
-            </a>
-            <!-- TODO: Hotelname, Adresse und Website-Link eintragen -->
-            <a href="#" class="hotel-card">
-              <p class="hotel-card__name"><!-- TODO: Hotelname --></p>
-              <p class="hotel-card__location"><!-- TODO: Adresse · ca. X km --></p>
-              <span class="hotel-card__link-label">Website →</span>
-            </a>
-            <!-- TODO: Hotelname, Adresse und Website-Link eintragen -->
-            <a href="#" class="hotel-card">
-              <p class="hotel-card__name"><!-- TODO: Hotelname --></p>
-              <p class="hotel-card__location"><!-- TODO: Adresse · ca. X km --></p>
-              <span class="hotel-card__link-label">Website →</span>
-            </a>
+          <div class="hotel-groups">
+            <div class="hotel-group">
+              <h4 class="hotel-group__heading">Tirschenreuth</h4>
+              <div class="hotel-grid">
+                <a href="https://www.8rooms-altstadthotel.de/" target="_blank" rel="noopener noreferrer" class="hotel-card">
+                  <p class="hotel-card__name">8 Rooms Altstadthotel</p>
+                  <p class="hotel-card__location">Hospitalstraße 7, 95643 Tirschenreuth</p>
+                  <span class="hotel-card__link-label">Website →</span>
+                </a>
+                <a href="https://www.hotel-seenario.de/" target="_blank" rel="noopener noreferrer" class="hotel-card">
+                  <p class="hotel-card__name">Hotel Seenario</p>
+                  <p class="hotel-card__location">Platz am See 1+2, 95643 Tirschenreuth</p>
+                  <span class="hotel-card__link-label">Website →</span>
+                </a>
+                <a href="https://www.pension-kistenpfennig.com/" target="_blank" rel="noopener noreferrer" class="hotel-card">
+                  <p class="hotel-card__name">Pension Kistenpfennig</p>
+                  <p class="hotel-card__location">Dammstr. 8, 95643 Tirschenreuth</p>
+                  <span class="hotel-card__link-label">Website →</span>
+                </a>
+              </div>
+            </div>
+            <div class="hotel-group">
+              <h4 class="hotel-group__heading">Kemnath</h4>
+              <div class="hotel-grid">
+                <a href="https://www.google.com/search?q=Hotel+Post+Kemnath" target="_blank" rel="noopener noreferrer" class="hotel-card">
+                  <p class="hotel-card__name">Hotel Post</p>
+                  <p class="hotel-card__location">Marktstraße 12, 95478 Kemnath</p>
+                  <span class="hotel-card__link-label">Website →</span>
+                </a>
+                <a href="https://www.google.com/search?q=Hotel+Krone+Kemnath" target="_blank" rel="noopener noreferrer" class="hotel-card">
+                  <p class="hotel-card__name">Hotel Krone</p>
+                  <p class="hotel-card__location">Rathausplatz 3, 95478 Kemnath</p>
+                  <span class="hotel-card__link-label">Website →</span>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -293,7 +309,7 @@
         <h2 class="section-title">Kommst du?</h2>
         <p class="rsvp__intro">
           Bitte gib uns bis zum
-          <strong id="rsvp-deadline">31. Mai 2026</strong> Bescheid.
+          <strong id="rsvp-deadline">21. Juni 2026</strong> Bescheid.
         </p>
 
         <form id="rsvp-form" class="form" novalidate>

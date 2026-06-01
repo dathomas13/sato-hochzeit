@@ -1170,6 +1170,30 @@ img.gallery__slide {
   font-weight: 500;
 }
 
+.hotel-groups {
+  display: grid;
+  gap: 2rem;
+}
+
+.hotel-group {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.hotel-group:first-child {
+  padding-top: 0;
+  border-top: none;
+}
+
+.hotel-group__heading {
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--navy-mid);
+  margin-bottom: 1rem;
+}
+
 /* ============================================================
    Anreise / Google Maps
    ============================================================ */
