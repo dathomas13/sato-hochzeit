@@ -277,8 +277,7 @@ function getFilteredSortedGuests() {
 }
 
 function formatShuttle(val) {
-  if (val === "bus-1") return "Bus 1:00 Uhr";
-  if (val === "bus-3") return "Bus 3:00 Uhr";
+  if (val === "bus-3") return "Bus 3:15 Uhr";
   if (val === "none") return "Selbst";
   return "";
 }
