@@ -386,57 +386,101 @@ function setupGallery() {
   const strip = document.getElementById("gallery-strip");
   if (!strip) return;
 
+  const originalCount = strip.children.length;
   // Duplicate slides for seamless infinite loop
   Array.from(strip.children).forEach((el) =>
     strip.appendChild(el.cloneNode(true))
   );
 
-  let pos = 0;
-  let paused = false;
   let isDragging = false;
+  let isTouching = false;
+  let hovering = false;
+  let settling = false; // true while we wait for momentum scrolling to stop
+  let lastScroll = 0;
+  let idleFrames = 0;
   let dragStartX = 0;
   let dragStartScroll = 0;
   const speed = 1.5; // px per frame (increase to make autoplay faster)
 
-  const halfWidth = () => strip.scrollWidth / 2;
+  // Exact loop width = distance from the first original slide to its clone.
+  // Using this instead of scrollWidth/2 makes the wrap pixel-perfect (no
+  // jitter at the loop point). Cached and re-measured on resize, since slide
+  // sizes only change between breakpoints.
+  let wrapWidth = 0;
+  const measure = () => {
+    wrapWidth =
+      strip.children[originalCount].offsetLeft - strip.children[0].offsetLeft;
+  };
+  measure();
+  window.addEventListener("resize", measure);
+  window.addEventListener("load", measure);
 
-  // Pause/resume on hover
-  strip.addEventListener("mouseenter", () => { paused = true; });
-  strip.addEventListener("mouseleave", () => { if (!isDragging) paused = false; });
+  // Called when an interaction ends: don't resume autoplay on a fixed timer
+  // (which fought the still-running inertial scroll and caused a brief
+  // judder). Instead watch the scroll position and only resume once it has
+  // actually come to rest – see tick().
+  const watchForRest = () => {
+    settling = true;
+    lastScroll = strip.scrollLeft;
+    idleFrames = 0;
+  };
 
-  // Drag to scroll (mouse)
+  // Pause/resume on hover (desktop)
+  strip.addEventListener("mouseenter", () => { if (!isTouching) hovering = true; });
+  strip.addEventListener("mouseleave", () => { hovering = false; });
+
+  // Drag to scroll (mouse / desktop only)
   strip.addEventListener("mousedown", (e) => {
+    if (isTouching) return; // ignore synthetic mouse events fired after touch
     isDragging = true;
-    paused = true;
+    settling = false;
     dragStartX = e.pageX;
     dragStartScroll = strip.scrollLeft;
     strip.classList.add("is-grabbing");
+  });
+  window.addEventListener("mousemove", (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    strip.scrollLeft = dragStartScroll - (e.pageX - dragStartX);
   });
   window.addEventListener("mouseup", () => {
     if (!isDragging) return;
     isDragging = false;
     strip.classList.remove("is-grabbing");
-    pos = strip.scrollLeft % halfWidth();
-    setTimeout(() => { paused = false; }, 1500);
-  });
-  window.addEventListener("mousemove", (e) => {
-    if (!isDragging) return;
-    strip.scrollLeft = dragStartScroll - (e.pageX - dragStartX);
+    watchForRest();
   });
 
-  // Touch support
-  strip.addEventListener("touchstart", () => { paused = true; }, { passive: true });
+  // Touch: let the browser scroll natively, only pause the autoplay.
+  // Setting isTouching suppresses the synthetic mouse handlers above so they
+  // don't fight the native scroll (which caused the jitter / double images).
+  strip.addEventListener("touchstart", () => {
+    isTouching = true;
+    settling = false;
+  }, { passive: true });
   strip.addEventListener("touchend", () => {
-    pos = strip.scrollLeft % halfWidth();
-    setTimeout(() => { paused = false; }, 2000);
-  });
+    isTouching = false;
+    watchForRest(); // resume only once inertial scrolling has stopped
+  }, { passive: true });
 
   function tick() {
-    if (!paused && !isDragging) {
-      pos += speed;
-      const hw = halfWidth();
-      if (pos >= hw) pos -= hw;
-      strip.scrollLeft = pos;
+    if (!isDragging && !isTouching && !hovering) {
+      if (settling) {
+        // Wait until inertial scrolling has truly stopped before resuming,
+        // so autoplay never writes scrollLeft mid-momentum.
+        const now = strip.scrollLeft;
+        if (Math.abs(now - lastScroll) < 0.5) {
+          if (++idleFrames >= 3) settling = false; // come to rest
+        } else {
+          idleFrames = 0;
+        }
+        lastScroll = now;
+      } else {
+        // Continue from the strip's actual position so we never snap back to a
+        // stale value after manual / momentum scrolling.
+        let next = strip.scrollLeft + speed;
+        if (wrapWidth > 0 && next >= wrapWidth) next -= wrapWidth; // seamless wrap
+        strip.scrollLeft = next;
+      }
     }
     requestAnimationFrame(tick);
   }
