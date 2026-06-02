@@ -441,7 +441,7 @@ function setupGallery() {
   }, { passive: true });
   strip.addEventListener("touchend", () => {
     isTouching = false;
-    scheduleResume(2000); // wait out momentum scrolling before resuming
+    scheduleResume(1000); // wait out momentum scrolling before resuming
   }, { passive: true });
 
   function tick() {
