@@ -113,9 +113,11 @@ if (firebaseReady) {
       if (user) {
         showDashboard(user);
         startGuestListener();
+        startAnalyticsListener();
       } else {
         showLogin();
         stopGuestListener();
+        stopAnalyticsListener();
       }
     } catch (err) {
       console.error("[Admin] Fehler im Auth-Handler:", err);
@@ -146,6 +148,7 @@ if (loginForm) {
       // Direkt-Fallback: Dashboard einblenden falls onAuthStateChanged nicht greift
       showDashboard(cred.user);
       startGuestListener();
+      startAnalyticsListener();
     } catch (err) {
       console.error(err);
       const code = err.code || "";
@@ -549,3 +552,80 @@ exportPdfBtn?.addEventListener("click", () => {
   window.addEventListener("afterprint", restore);
   window.print();
 });
+
+// ------------------------------------------------------------
+// Website-Statistik (anonyme Besucher-Zählung)
+// ------------------------------------------------------------
+const anViews = document.getElementById("an-views");
+const anUnique = document.getElementById("an-unique");
+const anToday = document.getElementById("an-today");
+const anWeek = document.getElementById("an-week");
+const anDevices = document.getElementById("an-devices");
+const anReferrers = document.getElementById("an-referrers");
+
+const DEVICE_LABEL = { mobile: "Mobil", desktop: "Desktop" };
+
+let analyticsUnsub = null;
+
+function startAnalyticsListener() {
+  if (!db || analyticsUnsub) return; // Verhindert doppelte Listener
+  const q = query(collection(db, "analytics"), orderBy("timestamp", "desc"));
+  analyticsUnsub = onSnapshot(
+    q,
+    (snap) => {
+      renderAnalytics(snap.docs.map((d) => d.data()));
+    },
+    (err) => {
+      console.error("[Admin] Analytics-Listener Fehler:", err);
+    }
+  );
+}
+
+function stopAnalyticsListener() {
+  if (analyticsUnsub) {
+    analyticsUnsub();
+    analyticsUnsub = null;
+  }
+}
+
+function renderBreakdown(ul, counts, labelMap = {}) {
+  if (!ul) return;
+  const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  if (entries.length === 0) {
+    ul.innerHTML = `<li class="analytics__empty">Noch keine Daten.</li>`;
+    return;
+  }
+  ul.innerHTML = entries
+    .map(
+      ([key, count]) =>
+        `<li><span>${escapeHtml(labelMap[key] || key)}</span><span class="analytics__count">${count}</span></li>`
+    )
+    .join("");
+}
+
+function renderAnalytics(docs) {
+  const today = new Date().toISOString().slice(0, 10);
+  const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+
+  const uniqueVisitors = new Set();
+  const devices = {};
+  const referrers = {};
+  let todayCount = 0;
+  let weekCount = 0;
+
+  for (const d of docs) {
+    if (d.visitorId) uniqueVisitors.add(d.visitorId);
+    if (d.device) devices[d.device] = (devices[d.device] || 0) + 1;
+    if (d.referrer) referrers[d.referrer] = (referrers[d.referrer] || 0) + 1;
+    if (d.day === today) todayCount++;
+    const ms = d.timestamp?.toMillis ? d.timestamp.toMillis() : 0;
+    if (ms >= weekAgo) weekCount++;
+  }
+
+  if (anViews) anViews.textContent = docs.length;
+  if (anUnique) anUnique.textContent = uniqueVisitors.size;
+  if (anToday) anToday.textContent = todayCount;
+  if (anWeek) anWeek.textContent = weekCount;
+  renderBreakdown(anDevices, devices, DEVICE_LABEL);
+  renderBreakdown(anReferrers, referrers);
+}
