@@ -391,52 +391,67 @@ function setupGallery() {
     strip.appendChild(el.cloneNode(true))
   );
 
-  let pos = 0;
   let paused = false;
   let isDragging = false;
+  let isTouching = false;
   let dragStartX = 0;
   let dragStartScroll = 0;
+  let resumeTimer = null;
   const speed = 1.5; // px per frame (increase to make autoplay faster)
 
   const halfWidth = () => strip.scrollWidth / 2;
 
-  // Pause/resume on hover
+  const scheduleResume = (delay) => {
+    clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(() => { paused = false; }, delay);
+  };
+
+  // Pause/resume on hover (desktop)
   strip.addEventListener("mouseenter", () => { paused = true; });
   strip.addEventListener("mouseleave", () => { if (!isDragging) paused = false; });
 
-  // Drag to scroll (mouse)
+  // Drag to scroll (mouse / desktop only)
   strip.addEventListener("mousedown", (e) => {
+    if (isTouching) return; // ignore synthetic mouse events fired after touch
     isDragging = true;
     paused = true;
     dragStartX = e.pageX;
     dragStartScroll = strip.scrollLeft;
     strip.classList.add("is-grabbing");
   });
+  window.addEventListener("mousemove", (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    strip.scrollLeft = dragStartScroll - (e.pageX - dragStartX);
+  });
   window.addEventListener("mouseup", () => {
     if (!isDragging) return;
     isDragging = false;
     strip.classList.remove("is-grabbing");
-    pos = strip.scrollLeft % halfWidth();
-    setTimeout(() => { paused = false; }, 1500);
-  });
-  window.addEventListener("mousemove", (e) => {
-    if (!isDragging) return;
-    strip.scrollLeft = dragStartScroll - (e.pageX - dragStartX);
+    scheduleResume(1500);
   });
 
-  // Touch support
-  strip.addEventListener("touchstart", () => { paused = true; }, { passive: true });
+  // Touch: let the browser scroll natively, only pause the autoplay.
+  // Setting isTouching suppresses the synthetic mouse handlers above so they
+  // don't fight the native scroll (which caused the jitter / double images).
+  strip.addEventListener("touchstart", () => {
+    isTouching = true;
+    paused = true;
+    clearTimeout(resumeTimer);
+  }, { passive: true });
   strip.addEventListener("touchend", () => {
-    pos = strip.scrollLeft % halfWidth();
-    setTimeout(() => { paused = false; }, 2000);
-  });
+    isTouching = false;
+    scheduleResume(2000); // wait out momentum scrolling before resuming
+  }, { passive: true });
 
   function tick() {
     if (!paused && !isDragging) {
-      pos += speed;
+      // Continue from the strip's actual position so we never snap back to a
+      // stale value after manual / momentum scrolling.
       const hw = halfWidth();
-      if (pos >= hw) pos -= hw;
-      strip.scrollLeft = pos;
+      let next = strip.scrollLeft + speed;
+      if (next >= hw) next -= hw; // seamless wrap (second half is a clone)
+      strip.scrollLeft = next;
     }
     requestAnimationFrame(tick);
   }
