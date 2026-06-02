@@ -61,7 +61,8 @@ jobs:
           banner='<div style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#b3261e;color:#fff;font:600 13px/1.45 system-ui,-apple-system,sans-serif;text-align:center;padding:6px 12px;letter-spacing:.04em;">DEV-VORSCHAU – nicht live · RSVP-Speicherung deaktiviert</div>'
           for f in _site/dev/index.html _site/dev/admin.html; do
             if [ -f "$f" ]; then
-              sed -i "s#<body[^>]*>#&${banner}#" "$f"
+              # '|' als sed-Trenner, da das Banner '#'-Hexfarben enthält
+              sed -i "s|<body[^>]*>|&${banner}|" "$f"
             fi
           done
 
