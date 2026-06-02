@@ -1,0 +1,85 @@
+name: Deploy site (live + dev preview)
+
+# Baut bei jedem Push auf 'main' ODER 'dev' die komplette GitHub-Pages-Seite neu:
+#   - main  ->  Live-Seite im Wurzelverzeichnis  (…github.io/sato-hochzeit/)
+#   - dev   ->  Vorschau im Unterordner /dev/     (…github.io/sato-hochzeit/dev/)
+# Auf der Dev-Vorschau wird das RSVP-Speichern deaktiviert (kein Schreiben in
+# die echte Firestore-Datenbank) und ein deutlich sichtbares DEV-Banner ergänzt.
+
+on:
+  push:
+    branches: [main, dev]
+  workflow_dispatch: # erlaubt manuelles Auslösen über die Actions-Oberfläche
+
+# Rechte, die der GitHub-Pages-Deploy benötigt
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Nie zwei Pages-Deploys gleichzeitig laufen lassen
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main (Live)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: live
+
+      - name: Checkout dev (Vorschau)
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          path: dev
+
+      - name: Seite zusammenbauen
+        run: |
+          set -e
+          mkdir -p _site
+
+          # --- Live-Seite ins Wurzelverzeichnis ---
+          rsync -a --exclude='.git' --exclude='.github' live/ _site/
+
+          # --- Dev-Vorschau in den Unterordner /dev/ ---
+          mkdir -p _site/dev
+          rsync -a --exclude='.git' --exclude='.github' dev/ _site/dev/
+
+          # --- RSVP-Speicherung auf der Dev-Vorschau deaktivieren ---
+          # Den Firebase-apiKey neutralisieren, sodass isFirebaseConfigured()
+          # false liefert und nichts in die echte Datenbank geschrieben wird.
+          if [ -f _site/dev/js/firebase-config.js ]; then
+            sed -i 's/apiKey: *"[^"]*"/apiKey: "DEIN_DEV_DISABLED"/' _site/dev/js/firebase-config.js
+          fi
+
+          # --- Sichtbares DEV-Banner auf den Vorschau-Seiten ergänzen ---
+          banner='<div style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#b3261e;color:#fff;font:600 13px/1.45 system-ui,-apple-system,sans-serif;text-align:center;padding:6px 12px;letter-spacing:.04em;">DEV-VORSCHAU – nicht live · RSVP-Speicherung deaktiviert</div>'
+          for f in _site/dev/index.html _site/dev/admin.html; do
+            if [ -f "$f" ]; then
+              sed -i "s#<body[^>]*>#&${banner}#" "$f"
+            fi
+          done
+
+          # GitHub Pages soll die Dateien 1:1 ausliefern (kein Jekyll-Processing)
+          touch _site/.nojekyll
+
+      - name: Pages-Artefakt hochladen
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Auf GitHub Pages veröffentlichen
+        id: deployment
+        uses: actions/deploy-pages@v4
