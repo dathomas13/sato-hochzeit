@@ -396,6 +396,7 @@ function setupGallery() {
   let isDragging = false;
   let dragStartX = 0;
   let dragStartScroll = 0;
+  const speed = 1.5; // px per frame (increase to make autoplay faster)
 
   const halfWidth = () => strip.scrollWidth / 2;
 
@@ -432,7 +433,7 @@ function setupGallery() {
 
   function tick() {
     if (!paused && !isDragging) {
-      pos += 0.5;
+      pos += speed;
       const hw = halfWidth();
       if (pos >= hw) pos -= hw;
       strip.scrollLeft = pos;

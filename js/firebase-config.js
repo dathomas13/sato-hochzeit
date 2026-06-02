@@ -39,6 +39,6 @@ export const weddingConfig = {
   venueShort: "Aurora",
   address: "Rohrwiesen 4, 95478 Kemnath",
   city: "Kemnath",
-  rsvpDeadline: "31. Mai 2026",
+  rsvpDeadline: "21. Juni 2026",
   contactEmail: "info.thomas.sarah@gmail.com"
 };
