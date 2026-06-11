@@ -106,14 +106,14 @@ function celebrate(message) {
 
 // ------------------------------------------------------------
 // Stufe 0 · kryptischer Hinweis in der Konsole
-//   "S29uYW1p"  --(Base64, daher der 64er-Nudge)-->  "Konami"
-//   Die Zeile "1986 … 30 Leben" ist ein googlebarer Brotkrumen,
-//   der auch Nicht-Gamer vom Wort "Konami" zum Konami-Code führt.
+//   "S29uYW1pIENvZGU="  --(Base64, daher der 64er-Nudge)-->  "Konami Code"
+//   Die Zeile "1986 … 30 Leben" ist ein zusätzlicher googlebarer
+//   Brotkrumen für alle, die den Konami-Code (noch) nicht kennen.
 // ------------------------------------------------------------
 function greet() {
   console.log(
     "%c❦ Ein Gruß in 64er-Päckchen – für die, die ihn lesen können:\n" +
-      "%c   S29uYW1p\n" +
+      "%c   S29uYW1pIENvZGU=\n" +
       "%c   (1986 schenkte er Spielern 30 Leben)",
     "font-family:Georgia,serif;font-size:16px;font-weight:bold;color:" + GOLD,
     "font-family:monospace;font-size:15px;font-weight:bold;letter-spacing:2px;color:" + GOLD_LIGHT,
@@ -150,9 +150,9 @@ function unlockStage2() {
   };
   console.log(
     "%cStufe 2 freigeschaltet:%c  ruf  jawort(\"losung\")  auf.\n\n" +
-      "%cMein Anfang fällt vom Himmel, nass und grau.\n" +
-      "Mein Ende schützt seit Jahrhunderten – schau genau.\n" +
-      "Dazwischen: ein Studiengang, zu viel Bier, zu viel Programm,\n" +
+      "%cDort ist es nebliger als gedacht,\n" +
+      "wo Stein auf Stein seit Ewigkeiten wacht.\n" +
+      "Hier fand sich: ein Master mit viel Bier und Programm,\n" +
       "und Abende mit Menschen, aus denen man nie ganz entkam.\n\n" +
       "Von dort verstreut man sich in Nord und Süd und West –\n" +
       "und trotzdem bleibt man immer noch, wenn längst gegangen der Rest.\n\n" +
