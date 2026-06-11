@@ -119,21 +119,38 @@ import {
     const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    const ua = navigator.userAgent || "";
+    const device = /Mobi|Android|iPhone|iPad|iPod/i.test(ua) ? "mobile" : "desktop";
+    let timezone = "";
+    try {
+      timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+    } catch (_) {}
+    const meta = {
+      userAgent: ua,
+      device,
+      language: navigator.language || "",
+      screen:
+        typeof screen !== "undefined" ? `${screen.width}x${screen.height}` : "",
+      timezone
+    };
+
     async function writeEgg(detail) {
       try {
-        await setDoc(
-          doc(db, "easteregg", visitorId),
-          {
-            visitorId,
-            level: detail.level || 0,
-            consoleOpen: !!detail.consoleOpen,
-            lastEvent: detail.event || "",
-            rsvpName: localStorage.getItem("sato:rsvpName") || null,
-            day: new Date().toISOString().slice(0, 10),
-            updatedAt: serverTimestamp()
-          },
-          { merge: true }
-        );
+        const patch = {
+          visitorId,
+          level: detail.level || 0,
+          consoleOpen: !!detail.consoleOpen,
+          lastEvent: detail.event || "",
+          rsvpName: localStorage.getItem("sato:rsvpName") || null,
+          day: new Date().toISOString().slice(0, 10),
+          updatedAt: serverTimestamp(),
+          ...meta
+        };
+        // Zeitstempel je Meilenstein (nur beim ersten Erreichen setzen).
+        if (detail.event === "konami") patch.konamiAt = serverTimestamp();
+        if (detail.event === "jawort") patch.jawortAt = serverTimestamp();
+        if (detail.event === "solved") patch.solvedAt = serverTimestamp();
+        await setDoc(doc(db, "easteregg", visitorId), patch, { merge: true });
       } catch (err) {
         console.debug("[EasterEgg] Speichern übersprungen:", err);
       }

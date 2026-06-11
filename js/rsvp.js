@@ -236,6 +236,21 @@ function nameToDocId(name) {
     .slice(0, 120);
 }
 
+// Dieselbe anonyme Browser-ID wie der Tracker / das Easter Egg.
+// Wird im RSVP mitgespeichert, damit Admin den Egg-Fortschritt
+// automatisch dem richtigen Gast zuordnen kann.
+function getVisitorId() {
+  let id = localStorage.getItem("visitorId");
+  if (!id) {
+    id =
+      crypto && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    localStorage.setItem("visitorId", id);
+  }
+  return id;
+}
+
 async function checkNameExists(name) {
   if (!firebaseReady || !db) return false;
   try {
@@ -289,6 +304,7 @@ async function submitRSVP(data, isUpdate) {
       wishes: data.wishes,
       guests: data.guests,
       shuttle: data.shuttle,
+      visitorId: getVisitorId(),
       timestamp: serverTimestamp(),
       ...(isUpdate ? { updated: true } : {})
     },

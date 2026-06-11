@@ -18,8 +18,10 @@ import {
   query,
   orderBy,
   doc,
+  setDoc,
   deleteDoc,
-  updateDoc
+  updateDoc,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // ------------------------------------------------------------
@@ -207,6 +209,7 @@ function startGuestListener() {
       setAdminStatus("");
       renderStats();
       renderTable();
+      renderEasterEgg(); // Dropdown-Optionen + Auto-Match aktuell halten
     },
     (err) => {
       console.error(err);
@@ -649,6 +652,7 @@ const EGG_LEVEL_LABEL = {
 };
 
 let eggUnsub = null;
+let eggDocs = []; // letzter Stand, damit wir bei Gästeliste-Updates neu rendern
 
 function startEasterEggListener() {
   if (!db || eggUnsub) return; // Verhindert doppelte Listener
@@ -659,7 +663,8 @@ function startEasterEggListener() {
   eggUnsub = onSnapshot(
     q,
     (snap) => {
-      renderEasterEgg(snap.docs.map((d) => d.data()));
+      eggDocs = snap.docs.map((d) => d.data());
+      renderEasterEgg();
     },
     (err) => {
       console.error("[Admin] Easter-Egg-Listener Fehler:", err);
@@ -677,9 +682,23 @@ function stopEasterEggListener() {
     eggUnsub();
     eggUnsub = null;
   }
+  eggDocs = [];
 }
 
-function renderEasterEgg(docs) {
+// Ordnet eine anonyme Egg-visitorId einem Gast zu: zuerst der vom Gast
+// selbst gestempelte rsvpName, sonst automatischer Treffer über die
+// visitorId, die seit Neuestem im RSVP mitgespeichert wird.
+function eggDisplayName(d) {
+  if (d.rsvpName) return d.rsvpName;
+  if (d.visitorId) {
+    const match = allGuests.find((g) => g.visitorId === d.visitorId);
+    if (match) return match.name;
+  }
+  return "";
+}
+
+function renderEasterEgg() {
+  const docs = eggDocs;
   let consoleCount = 0, konami = 0, jawort = 0, solved = 0;
   for (const d of docs) {
     const lvl = d.level || 0;
@@ -703,13 +722,69 @@ function renderEasterEgg(docs) {
     eeList.innerHTML = `<li class="analytics__empty">Noch niemand hat gestöbert.</li>`;
     return;
   }
+
+  // Namens-Optionen für das Zuordnen-Dropdown aus der Gästeliste.
+  const guestNames = [...new Set(allGuests.map((g) => g.name).filter(Boolean))].sort(
+    (a, b) => a.localeCompare(b, "de")
+  );
+
   eeList.innerHTML = rows
     .map((d) => {
-      const who = d.rsvpName
-        ? escapeHtml(d.rsvpName)
-        : `anonym (${escapeHtml((d.visitorId || "").slice(0, 8))})`;
+      const name = eggDisplayName(d);
+      const who = name
+        ? `<strong>${escapeHtml(name)}</strong>`
+        : `<span class="ee-anon">anonym (${escapeHtml((d.visitorId || "").slice(0, 8))})</span>`;
       const label = EGG_LEVEL_LABEL[d.level || 0] || "Konsole offen";
-      return `<li><span>${who}</span><span class="analytics__count">${escapeHtml(label)}</span></li>`;
+      const meta = [d.device, d.language, d.timezone].filter(Boolean).join(" · ");
+      const uaTitle = d.userAgent ? ` title="${escapeHtml(d.userAgent)}"` : "";
+
+      // Dropdown zum manuellen Zuordnen. Aktueller Name wird vorausgewählt;
+      // falls er (noch) nicht in der Gästeliste steht, ergänzen wir ihn.
+      const names = guestNames.includes(name) || !name ? guestNames : [name, ...guestNames];
+      const options =
+        `<option value="">— nicht zugeordnet —</option>` +
+        names
+          .map(
+            (n) =>
+              `<option${n === name ? " selected" : ""}>${escapeHtml(n)}</option>`
+          )
+          .join("");
+
+      return `<li class="ee-row">
+        <span class="ee-who">${who}${meta ? ` <small${uaTitle}>${escapeHtml(meta)}</small>` : ""}</span>
+        <span class="ee-meta">
+          <span class="analytics__count">${escapeHtml(label)}</span>
+          <select class="ee-assign" data-vid="${escapeHtml(d.visitorId || "")}" title="Gast zuordnen">${options}</select>
+        </span>
+      </li>`;
     })
     .join("");
 }
+
+// Manuelles Zuordnen: schreibt den gewählten Namen auf den Egg-Eintrag.
+async function assignEggName(visitorId, name) {
+  if (!db || !visitorId) return;
+  try {
+    await setDoc(
+      doc(db, "easteregg", visitorId),
+      { rsvpName: name || null, manuallyLinked: !!name, updatedAt: serverTimestamp() },
+      { merge: true }
+    );
+    setAdminStatus(
+      name ? `Egg-Eintrag „${name}" zugeordnet.` : "Zuordnung entfernt.",
+      "success"
+    );
+  } catch (err) {
+    console.error(err);
+    setAdminStatus(
+      "Zuordnung fehlgeschlagen: " + (err.code || err.message || "Fehler"),
+      "error"
+    );
+  }
+}
+
+eeList?.addEventListener("change", (evt) => {
+  const sel = evt.target.closest("select.ee-assign");
+  if (!sel) return;
+  assignEggName(sel.dataset.vid, sel.value);
+});
