@@ -652,7 +652,10 @@ let eggUnsub = null;
 
 function startEasterEggListener() {
   if (!db || eggUnsub) return; // Verhindert doppelte Listener
-  const q = query(collection(db, "easteregg"), orderBy("updatedAt", "desc"));
+  // KEIN serverseitiges orderBy: Firestore schließt Dokumente, denen das
+  // Sortierfeld fehlt, sonst stillschweigend aus dem Ergebnis aus. Wir
+  // laden alle Egg-Dokumente und sortieren im Client (siehe renderEasterEgg).
+  const q = collection(db, "easteregg");
   eggUnsub = onSnapshot(
     q,
     (snap) => {
@@ -660,6 +663,11 @@ function startEasterEggListener() {
     },
     (err) => {
       console.error("[Admin] Easter-Egg-Listener Fehler:", err);
+      setAdminStatus(
+        "Easter-Egg-Statistik konnte nicht geladen werden: " +
+          (err.code || err.message || "unbekannter Fehler"),
+        "error"
+      );
     }
   );
 }
