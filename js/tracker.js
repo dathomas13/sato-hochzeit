@@ -27,6 +27,8 @@ import {
   getFirestore,
   collection,
   addDoc,
+  doc,
+  setDoc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -87,5 +89,61 @@ import {
   } catch (err) {
     // Tracking ist optional – Fehler dürfen die Seite nicht stören.
     console.debug("[Tracker] übersprungen:", err);
+  }
+})();
+
+// ============================================================
+// Easter-Egg-Fortschritt (anonym) nach Firestore spiegeln
+// ------------------------------------------------------------
+// js/effects.js (das Easter Egg) kann selbst kein Firebase laden
+// und meldet seinen Fortschritt nur über window-Events + eine
+// Warteschlange. Hier nehmen wir das entgegen und legen pro
+// Besucher EIN Dokument in der Collection "easteregg" ab
+// (Dok-ID = visitorId), das den höchsten erreichten Level hält.
+// Wenn derselbe Besucher ein RSVP abgeschickt hat, wird der Name
+// mitgespeichert (vom Gast über die Einladung freigegeben).
+// ============================================================
+(function trackEasterEgg() {
+  try {
+    if (!isFirebaseConfigured()) return;
+
+    let visitorId = localStorage.getItem("visitorId");
+    if (!visitorId) {
+      visitorId =
+        crypto && crypto.randomUUID
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      localStorage.setItem("visitorId", visitorId);
+    }
+
+    const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function writeEgg(detail) {
+      try {
+        await setDoc(
+          doc(db, "easteregg", visitorId),
+          {
+            visitorId,
+            level: detail.level || 0,
+            consoleOpen: !!detail.consoleOpen,
+            lastEvent: detail.event || "",
+            rsvpName: localStorage.getItem("sato:rsvpName") || null,
+            day: new Date().toISOString().slice(0, 10),
+            updatedAt: serverTimestamp()
+          },
+          { merge: true }
+        );
+      } catch (err) {
+        console.debug("[EasterEgg] Speichern übersprungen:", err);
+      }
+    }
+
+    // Erst zuhören (für künftige Events), dann die Warteschlange leeren.
+    window.addEventListener("sato-egg", (e) => writeEgg(e.detail || {}));
+    const queue = window.__satoEggQueue || [];
+    queue.forEach(writeEgg);
+  } catch (err) {
+    console.debug("[EasterEgg] Tracker übersprungen:", err);
   }
 })();

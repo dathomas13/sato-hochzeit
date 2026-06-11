@@ -47,6 +47,51 @@ async function sha(value) {
 }
 
 // ------------------------------------------------------------
+// Fortschritts-Meldung (anonym, datensparsam)
+// ------------------------------------------------------------
+// Das Easter Egg darf KEIN Firebase importieren (es ist als Blob
+// verpackt). Stattdessen meldet es den erreichten Level nur über
+// ein window-Event + localStorage. js/tracker.js (hat Firebase)
+// hört darauf und schreibt es in die Collection "easteregg".
+//
+// Levels:  1 = Konami gelöst · 2 = jawort() aufgerufen · 3 = Rätsel gelöst
+function report(patch) {
+  try {
+    var prev = Number(localStorage.getItem("sato:eggLevel") || 0);
+    var maxLevel = Math.max(prev, patch.level || 0);
+    if (maxLevel !== prev) localStorage.setItem("sato:eggLevel", String(maxLevel));
+    var consoleOpen =
+      !!patch.consoleOpen || localStorage.getItem("sato:consoleOpen") === "1";
+    if (consoleOpen) localStorage.setItem("sato:consoleOpen", "1");
+    var detail = { level: maxLevel, consoleOpen: consoleOpen, event: patch.event || "" };
+    (window.__satoEggQueue = window.__satoEggQueue || []).push(detail);
+    window.dispatchEvent(new CustomEvent("sato-egg", { detail: detail }));
+  } catch (e) {}
+}
+
+// Best-effort-Erkennung offener DevTools: angedockte DevTools, die NACH
+// dem Laden geöffnet werden, vergrößern die Lücke zwischen outer/inner
+// gegenüber dem beim Laden gemessenen Grundwert (Browser-Chrome). Erkennt
+// keine abgedockten Fenster und keine schon beim Laden offenen DevTools –
+// die definitiven Signale (Konami / jawort) decken engagierte Besucher ab.
+function watchConsole() {
+  try {
+    var reported = false;
+    var baseW = window.outerWidth - window.innerWidth;
+    var baseH = window.outerHeight - window.innerHeight;
+    var timer = setInterval(function () {
+      if (reported) { clearInterval(timer); return; }
+      var dW = window.outerWidth - window.innerWidth - baseW;
+      var dH = window.outerHeight - window.innerHeight - baseH;
+      if (dW > 120 || dH > 120) {
+        reported = true;
+        report({ consoleOpen: true, event: "console-open" });
+      }
+    }, 1500);
+  } catch (e) {}
+}
+
+// ------------------------------------------------------------
 // Stil + Konfetti (CSS wird einmalig injiziert)
 // ------------------------------------------------------------
 var stylesInjected = false;
@@ -129,12 +174,14 @@ function greet() {
 function unlockStage2() {
   if (window.jawort) return;
   window.jawort = async function (losung) {
+    report({ level: 2, consoleOpen: true, event: "jawort" });
     if (typeof losung !== "string") {
       console.log("%cjawort(\"…\") erwartet ein Wort in Anführungszeichen.", "color:#9aa7b1");
       return "❦";
     }
     var ok = (await sha(losung.toLowerCase().trim())) === PW_HASH;
     if (ok) {
+      report({ level: 3, consoleOpen: true, event: "solved" });
       celebrate("Zugriff gewährt. 🎶");
       console.log(
         "%c🎶 Eure Belohnung: ein Wunschsong beim DJ.\n" +
@@ -177,6 +224,7 @@ document.addEventListener("keydown", async function (e) {
     var hsh = await sha(buffer.join("|"));
     if (hsh === KONAMI_HASH) {
       buffer = [];
+      report({ level: 1, consoleOpen: true, event: "konami" });
       celebrate("Stufe 1 geschafft! 🎉");
       unlockStage2();
     }
@@ -189,3 +237,6 @@ if (document.readyState === "loading") {
 } else {
   greet();
 }
+
+// Beobachtet ab Laden, ob die DevTools geöffnet werden.
+watchConsole();

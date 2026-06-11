@@ -114,10 +114,12 @@ if (firebaseReady) {
         showDashboard(user);
         startGuestListener();
         startAnalyticsListener();
+        startEasterEggListener();
       } else {
         showLogin();
         stopGuestListener();
         stopAnalyticsListener();
+        stopEasterEggListener();
       }
     } catch (err) {
       console.error("[Admin] Fehler im Auth-Handler:", err);
@@ -149,6 +151,7 @@ if (loginForm) {
       showDashboard(cred.user);
       startGuestListener();
       startAnalyticsListener();
+      startEasterEggListener();
     } catch (err) {
       console.error(err);
       const code = err.code || "";
@@ -627,4 +630,78 @@ function renderAnalytics(docs) {
   if (anWeek) anWeek.textContent = weekCount;
   renderBreakdown(anDevices, devices, DEVICE_LABEL);
   renderBreakdown(anReferrers, referrers);
+}
+
+// ------------------------------------------------------------
+// Easter-Egg-Statistik (versteckte Entwickler-Spielerei)
+// ------------------------------------------------------------
+const eeConsole = document.getElementById("ee-console");
+const eeKonami = document.getElementById("ee-konami");
+const eeJawort = document.getElementById("ee-jawort");
+const eeSolved = document.getElementById("ee-solved");
+const eeList = document.getElementById("ee-list");
+
+const EGG_LEVEL_LABEL = {
+  0: "Konsole offen",
+  1: "Konami gelöst",
+  2: "Stufe 2 (jawort)",
+  3: "Rätsel gelöst 🎶"
+};
+
+let eggUnsub = null;
+
+function startEasterEggListener() {
+  if (!db || eggUnsub) return; // Verhindert doppelte Listener
+  const q = query(collection(db, "easteregg"), orderBy("updatedAt", "desc"));
+  eggUnsub = onSnapshot(
+    q,
+    (snap) => {
+      renderEasterEgg(snap.docs.map((d) => d.data()));
+    },
+    (err) => {
+      console.error("[Admin] Easter-Egg-Listener Fehler:", err);
+    }
+  );
+}
+
+function stopEasterEggListener() {
+  if (eggUnsub) {
+    eggUnsub();
+    eggUnsub = null;
+  }
+}
+
+function renderEasterEgg(docs) {
+  let consoleCount = 0, konami = 0, jawort = 0, solved = 0;
+  for (const d of docs) {
+    const lvl = d.level || 0;
+    if (d.consoleOpen) consoleCount++;
+    if (lvl >= 1) konami++;
+    if (lvl >= 2) jawort++;
+    if (lvl >= 3) solved++;
+  }
+  if (eeConsole) eeConsole.textContent = consoleCount;
+  if (eeKonami) eeKonami.textContent = konami;
+  if (eeJawort) eeJawort.textContent = jawort;
+  if (eeSolved) eeSolved.textContent = solved;
+
+  if (!eeList) return;
+  // Höchster Fortschritt zuerst; nur Besucher mit echter Aktivität zeigen.
+  const rows = docs
+    .filter((d) => (d.level || 0) >= 1 || d.consoleOpen)
+    .sort((a, b) => (b.level || 0) - (a.level || 0));
+
+  if (rows.length === 0) {
+    eeList.innerHTML = `<li class="analytics__empty">Noch niemand hat gestöbert.</li>`;
+    return;
+  }
+  eeList.innerHTML = rows
+    .map((d) => {
+      const who = d.rsvpName
+        ? escapeHtml(d.rsvpName)
+        : `anonym (${escapeHtml((d.visitorId || "").slice(0, 8))})`;
+      const label = EGG_LEVEL_LABEL[d.level || 0] || "Konsole offen";
+      return `<li><span>${who}</span><span class="analytics__count">${escapeHtml(label)}</span></li>`;
+    })
+    .join("");
 }

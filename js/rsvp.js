@@ -298,6 +298,27 @@ async function submitRSVP(data, isUpdate) {
   await setDoc(doc(db, "rsvp-names", docId), { name: data.name });
 }
 
+// Verknüpft – falls der Gast das versteckte Easter Egg gespielt hat –
+// seinen Namen mit dem anonymen Fortschritts-Eintrag (Collection
+// "easteregg"). Der Gast hat dem über die Einladung zugestimmt. Legt
+// KEINEN neuen Eintrag an, wenn noch kein Easter-Egg-Fortschritt
+// existiert – wir wollen die echte Gästeliste nicht aufblähen.
+async function linkEasterEgg(name) {
+  try {
+    localStorage.setItem("sato:rsvpName", name);
+    const level = localStorage.getItem("sato:eggLevel");
+    const visitorId = localStorage.getItem("visitorId");
+    if (!level || !visitorId || !firebaseReady || !db) return;
+    await setDoc(
+      doc(db, "easteregg", visitorId),
+      { rsvpName: name, updatedAt: serverTimestamp() },
+      { merge: true }
+    );
+  } catch (err) {
+    console.debug("[EasterEgg] Verknüpfung übersprungen:", err);
+  }
+}
+
 function showSuccess(attendance) {
   const msg = attendance === "no" ? successNo : successYes;
   [successYes, successNo].forEach((m) => m?.classList.remove("show"));
@@ -361,6 +382,7 @@ if (form) {
       await submitRSVP(data, isUpdate);
       setStatus("");
       showSuccess(data.attendance);
+      linkEasterEgg(data.name);
     } catch (err) {
       console.error(err);
       const isPermissionError =
