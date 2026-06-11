@@ -30,13 +30,13 @@
 // ============================================================
 "use strict";
 
-var GOLD = "#6B8BA4", NAVY = "#2C3840", CREAM = "#F7F4EF";
+var GOLD = "#6B8BA4", GOLD_LIGHT = "#A4C0D2", NAVY = "#2C3840", CREAM = "#F7F4EF";
 
 // Salt + Hashes. Aus einem Hash lässt sich die Lösung nicht
 // zurückrechnen – selbst wer diesen Code liest, muss die Rätsel lösen.
 var SALT = "sato2026";
 var KONAMI_HASH = "748f7e27a70d9f321c8aa86e3439e58e3124f5afa9ee4a66bcb2d3f3b6073444";
-var PW_HASH     = "52613cc6b13fb8854654fd83f98c0405be5b626a0967d453a1d03a67d802adc9";
+var PW_HASH     = "a298730d029af353e5f046553bb78dd693f1d37a8f5afadaf77e8780dcb66cc4";
 
 async function sha(value) {
   var data = new TextEncoder().encode(SALT + ":" + value);
@@ -106,16 +106,18 @@ function celebrate(message) {
 
 // ------------------------------------------------------------
 // Stufe 0 · kryptischer Hinweis in der Konsole
-//   "S29uYW1p"  --(Base64)-->  "Konami"
+//   "S29uYW1p"  --(Base64, daher der 64er-Nudge)-->  "Konami"
+//   Die Zeile "1986 … 30 Leben" ist ein googlebarer Brotkrumen,
+//   der auch Nicht-Gamer vom Wort "Konami" zum Konami-Code führt.
 // ------------------------------------------------------------
 function greet() {
   console.log(
-    "%c❦ Für die, die hinter die Kulissen blicken\n" +
-      "%cS29uYW1p\n" +
-      "%c(manche Codes sind unsterblich)",
-    "font-family:Georgia,serif;font-size:16px;font-weight:bold;color:" + NAVY,
-    "font-family:monospace;font-size:14px;letter-spacing:2px;color:" + GOLD,
-    "font-family:sans-serif;font-size:12px;color:#728492"
+    "%c❦ Ein Gruß in 64er-Päckchen – für die, die ihn lesen können:\n" +
+      "%c   S29uYW1p\n" +
+      "%c   (1986 schenkte er Spielern 30 Leben)",
+    "font-family:Georgia,serif;font-size:16px;font-weight:bold;color:" + GOLD,
+    "font-family:monospace;font-size:15px;font-weight:bold;letter-spacing:2px;color:" + GOLD_LIGHT,
+    "font-family:sans-serif;font-size:12px;color:#9aa7b1"
   );
 }
 
@@ -128,30 +130,34 @@ function unlockStage2() {
   if (window.jawort) return;
   window.jawort = async function (losung) {
     if (typeof losung !== "string") {
-      console.log("%cjawort(\"…\") erwartet ein Wort.", "color:#728492");
+      console.log("%cjawort(\"…\") erwartet ein Wort in Anführungszeichen.", "color:#9aa7b1");
       return "❦";
     }
     var ok = (await sha(losung.toLowerCase().trim())) === PW_HASH;
     if (ok) {
-      celebrate("Du hast es geknackt. 💍");
+      celebrate("Zugriff gewährt. 🎶");
       console.log(
-        "%c🏆 Ihr habt es bis zum Schluss geschafft.\n" +
-          "%cGenau für Köpfe wie euch haben wir das hier versteckt.\n" +
-          "Danke, dass ihr Teil unseres Tages seid. – Thomas & Sarah ❤",
+        "%c🎶 Eure Belohnung: ein Wunschsong beim DJ.\n" +
+          "%cGeht zum DJ und nennt das Zauberwort  »sudo«  –\n" +
+          "euer Wunschsong wird ausgeführt. (Einmal pro Person, wir zählen mit.)",
         "color:" + GOLD + ";font-size:15px;font-weight:bold;font-family:sans-serif",
-        "color:" + NAVY + ";font-size:13px;font-family:Georgia,serif"
+        "color:" + GOLD_LIGHT + ";font-size:13px;font-family:Georgia,serif"
       );
-      return "❤";
+      return "🎶";
     }
-    console.log("%cNicht ganz … denk an den Ort, an dem wir uns das Ja-Wort geben.", "color:#728492");
+    console.log("%cNicht ganz … lies das Rätsel nochmal Zeile für Zeile.", "color:#9aa7b1");
     return "…";
   };
   console.log(
-    "%cStufe 2 freigeschaltet:%c ruf  jawort(\"losung\")  auf.\n" +
-      "%cDie Losung? Der Ort, an dem wir uns das Ja-Wort geben – ein Wort, klein.",
+    "%cStufe 2 freigeschaltet:%c  ruf  jawort(\"losung\")  auf.\n\n" +
+      "%cIch klinge nach Wetter und stürmischen Tagen,\n" +
+      "doch kann man in mir auch ein Schlosstor aufschlagen.\n" +
+      "An der Donau erbaut, alt, kaiserlich, rein,\n" +
+      "muss ich trotz meines Namens kein Unwetter sein.\n" +
+      "Welche Stadt bin ich?  (Lösung kleingeschrieben)",
     "color:" + GOLD + ";font-weight:bold;font-family:sans-serif;font-size:14px",
-    "font-family:monospace;font-size:13px;color:" + NAVY,
-    "font-family:sans-serif;font-size:12px;color:#728492"
+    "font-family:monospace;font-size:14px;font-weight:bold;color:" + GOLD_LIGHT,
+    "font-family:Georgia,serif;font-size:13px;font-style:italic;color:" + GOLD
   );
 }
 
