@@ -150,11 +150,13 @@ function unlockStage2() {
   };
   console.log(
     "%cStufe 2 freigeschaltet:%c  ruf  jawort(\"losung\")  auf.\n\n" +
-      "%cIch klinge nach Wetter und stürmischen Tagen,\n" +
-      "doch kann man in mir auch ein Schlosstor aufschlagen.\n" +
-      "An der Donau erbaut, alt, kaiserlich, rein,\n" +
-      "muss ich trotz meines Namens kein Unwetter sein.\n" +
-      "Welche Stadt bin ich?  (Lösung kleingeschrieben)",
+      "%cMein Anfang fällt vom Himmel, nass und grau.\n" +
+      "Mein Ende schützt seit Jahrhunderten – schau genau.\n" +
+      "Dazwischen: ein Studiengang, zu viel Bier, zu viel Programm,\n" +
+      "und Abende mit Menschen, aus denen man nie ganz entkam.\n\n" +
+      "Von dort verstreut man sich in Nord und Süd und West –\n" +
+      "und trotzdem bleibt man immer noch, wenn längst gegangen der Rest.\n\n" +
+      "Was bin ich?  (Antwort kleingeschrieben)",
     "color:" + GOLD + ";font-weight:bold;font-family:sans-serif;font-size:14px",
     "font-family:monospace;font-size:14px;font-weight:bold;color:" + GOLD_LIGHT,
     "font-family:Georgia,serif;font-size:13px;font-style:italic;color:" + GOLD
