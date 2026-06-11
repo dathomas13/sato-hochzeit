@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Thomas & Sarah">
+  <rect width="64" height="64" rx="14" fill="#2C3840"/>
+  <text x="32" y="45" font-size="36" text-anchor="middle" fill="#F7F4EF"
+        font-family="Georgia, 'Times New Roman', serif">&#10087;</text>
+</svg>
